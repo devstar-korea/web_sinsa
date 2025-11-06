@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "progress": "cat PROGRESS.md",
+    "status": "git status && echo '\n--- Recent Commits ---' && git log --oneline -5"
   },
   "keywords": [],
   "author": "",
