@@ -1,0 +1,100 @@
+import Link from 'next/link'
+import { ArticleCard as ArticleCardType } from '@/lib/types'
+
+interface ArticleCardProps {
+  article: ArticleCardType
+}
+
+const categoryLabels = {
+  guide: '가이드',
+  tips: '팁',
+  market: '시장분석',
+}
+
+const categoryColors = {
+  guide: 'bg-primary-100 text-primary-700',
+  tips: 'bg-success-light text-success-dark',
+  market: 'bg-warning-light text-warning-dark',
+}
+
+export default function ArticleCard({ article }: ArticleCardProps) {
+  return (
+    <Link href={`/articles/${article.slug}`} className="group">
+      <div className="bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
+        {/* Thumbnail */}
+        <div className="relative h-48 bg-slate-100 overflow-hidden">
+          <img
+            src={article.thumbnail.url}
+            alt={article.thumbnail.alt}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          {/* Category Badge */}
+          <div className="absolute top-3 left-3">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                categoryColors[article.category]
+              }`}
+            >
+              {categoryLabels[article.category]}
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          {/* Title */}
+          <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {article.title}
+          </h3>
+
+          {/* Excerpt */}
+          <p className="text-sm text-slate-600 mb-4 line-clamp-3">{article.excerpt}</p>
+
+          {/* Meta */}
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center space-x-2">
+              {article.author.avatar && (
+                <img
+                  src={article.author.avatar}
+                  alt={article.author.name}
+                  className="w-6 h-6 rounded-full"
+                />
+              )}
+              <span>{article.author.name}</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="flex items-center">
+                <svg
+                  className="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                {article.viewCount.toLocaleString()}
+              </span>
+              <span>
+                {new Date(article.publishedAt).toLocaleDateString('ko-KR', {
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
