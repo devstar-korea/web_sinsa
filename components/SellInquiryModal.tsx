@@ -4,6 +4,13 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface SellInquiryModalProps {
   isOpen: boolean
@@ -19,8 +26,6 @@ export default function SellInquiryModal({ isOpen, onClose }: SellInquiryModalPr
     message: '',
   })
 
-  if (!isOpen) return null
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // TODO: 실제 제출 로직 구현
@@ -34,26 +39,18 @@ export default function SellInquiryModal({ isOpen, onClose }: SellInquiryModalPr
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-grey-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-grey-200 p-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-main-lg font-bold text-grey-900">매각 상담</h2>
-            <p className="text-body text-grey-600 mt-1">공유오피스 전문가와 상담하세요</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-grey-400 hover:text-grey-600 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-main-lg font-bold text-grey-900">
+            매각 상담
+          </DialogTitle>
+          <DialogDescription className="text-body text-grey-600">
+            공유오피스 전문가와 상담하세요
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             {/* 신청인 성함 */}
             <div>
@@ -121,8 +118,8 @@ export default function SellInquiryModal({ isOpen, onClose }: SellInquiryModalPr
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="mt-6 flex gap-3">
+          {/* Submit Buttons */}
+          <div className="flex gap-3 pt-4">
             <Button
               type="button"
               variant="secondary"
@@ -139,7 +136,7 @@ export default function SellInquiryModal({ isOpen, onClose }: SellInquiryModalPr
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
