@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArticleCard as ArticleCardType } from '@/lib/types'
 import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface ArticleCardProps {
   article: ArticleCardType
@@ -31,13 +32,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           />
           {/* Category Badge */}
           <div className="absolute top-3 left-3">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                categoryColors[article.category]
-              }`}
+            <Badge
+              variant="secondary"
+              className={`rounded-full ${categoryColors[article.category]}`}
             >
               {categoryLabels[article.category]}
-            </span>
+            </Badge>
           </div>
         </div>
 
