@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArticleCard as ArticleCardType } from '@/lib/types'
+import { Card } from '@/components/ui/card'
 
 interface ArticleCardProps {
   article: ArticleCardType
@@ -20,7 +21,7 @@ const categoryColors = {
 export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link href={`/articles/${article.slug}`} className="group">
-      <div className="bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
+      <Card className="overflow-hidden border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
         {/* Thumbnail */}
         <div className="relative h-48 bg-slate-100 overflow-hidden">
           <img
@@ -94,7 +95,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     </Link>
   )
 }

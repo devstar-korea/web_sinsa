@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ListingCard as ListingCardType } from '@/lib/types'
+import { Card } from '@/components/ui/card'
 
 interface ListingCardProps {
   listing: ListingCardType
@@ -12,7 +13,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
 
   return (
     <Link href={`/listings/${listing.slug}`} className="group block h-full">
-      <div className="bg-white rounded-lg overflow-hidden border border-grey-200 hover:border-tossBlue transition-all hover:shadow-md flex flex-col h-full">
+      <Card className="overflow-hidden border-grey-200 hover:border-tossBlue transition-all hover:shadow-md flex flex-col h-full">
         {/* Listing Number - Above Image */}
         <div className="px-4 pt-4 pb-2">
           <span className="inline-block px-3 py-1.5 bg-grey-100 text-grey-700 rounded-md text-body font-medium border border-grey-200">
@@ -100,7 +101,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     </Link>
   )
 }
