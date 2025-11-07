@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 import SellInquiryModal from '@/components/SellInquiryModal'
 
 export default function Header() {
@@ -31,12 +32,13 @@ export default function Header() {
             >
               비즈니스 인사이트
             </Link>
-            <button
+            <Button
               onClick={() => setIsSellModalOpen(true)}
-              className="px-5 py-2.5 bg-tossBlue text-white rounded-lg font-medium hover:bg-primary-600 transition-colors text-body"
+              size="lg"
+              className="text-body font-medium"
             >
               매각 상담
-            </button>
+            </Button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -95,15 +97,15 @@ export default function Header() {
               >
                 비즈니스 인사이트
               </Link>
-              <button
+              <Button
                 onClick={() => {
                   setIsMobileMenuOpen(false)
                   setIsSellModalOpen(true)
                 }}
-                className="px-3 py-2 bg-tossBlue text-white rounded-lg font-medium hover:bg-primary-600 transition-colors text-center text-body"
+                className="text-body font-medium w-full"
               >
                 매각 상담
-              </button>
+              </Button>
             </nav>
           </div>
         )}

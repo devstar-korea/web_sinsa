@@ -997,9 +997,9 @@ export function getArticleBySlug(slug: string): Article | undefined {
 }
 
 // 지역별 매물 필터링
-export function getListingsByLocation(city: string): Listing[] {
+export function getListingsByLocation(province: string): Listing[] {
   return dummyListings.filter(
-    (listing) => listing.location.city === city && listing.status === 'active'
+    (listing) => listing.location.province === province && listing.status === 'active'
   )
 }
 
