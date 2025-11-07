@@ -22,7 +22,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
     .filter(
       (l) =>
         l.id !== listing.id &&
-        l.location.city === listing.location.city &&
+        (l.location.locationKey || l.location.province) === (listing.location.locationKey || listing.location.province) &&
         l.status === 'active'
     )
     .slice(0, 3)
@@ -115,40 +115,22 @@ export default async function ListingDetailPage({ params }: PageProps) {
                   />
                 </svg>
                 <span>
-                  {listing.location.province} {listing.location.city} • {listing.location.displayLocation}
+                  {listing.location.province}
                 </span>
               </div>
 
               {/* Key Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4 border-y border-slate-200">
+              <div className="grid grid-cols-2 gap-4 py-4 border-y border-slate-200">
                 <div>
                   <div className="text-sm text-slate-600 mb-1">면적</div>
                   <div className="font-semibold text-slate-900">
-                    {listing.area.pyeong}평 ({listing.area.squareMeter}㎡)
+                    {listing.area.squareMeter}㎡
                   </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-600 mb-1">좌석 수</div>
-                  <div className="font-semibold text-slate-900">{listing.totalSeats}석</div>
                 </div>
                 <div>
                   <div className="text-sm text-slate-600 mb-1">개업일</div>
                   <div className="font-semibold text-slate-900">
                     {new Date(listing.openedAt).toLocaleDateString('ko-KR')}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-600 mb-1">운영 상태</div>
-                  <div className="font-semibold">
-                    <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        listing.operatingStatus === 'operating'
-                          ? 'bg-success-light text-success-dark'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {listing.operatingStatus === 'operating' ? '운영중' : '운영종료'}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -195,15 +177,38 @@ export default async function ListingDetailPage({ params }: PageProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg border border-slate-200 p-6 sticky top-20">
-              {/* Price */}
+              {/* 재정 정보 */}
               <div className="mb-6">
-                <div className="text-sm text-slate-600 mb-2">양도 희망가</div>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-3xl font-bold text-slate-900">
-                    {listing.price.displayText}
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">투자 정보</h3>
+
+                {/* 권리금 */}
+                <div className="flex items-baseline justify-between mb-3">
+                  <span className="text-sm text-slate-600">권리금</span>
+                  <span className="text-xl font-bold text-slate-900">
+                    {(listing.premiumAmount / 10000).toLocaleString()}만원
                   </span>
+                </div>
+
+                {/* 월수익 */}
+                <div className="flex items-baseline justify-between mb-4">
+                  <span className="text-sm text-slate-600">월수익</span>
+                  <span className="text-xl font-bold text-primary-600">
+                    {(listing.monthlyProfit / 10000).toLocaleString()}만원
+                  </span>
+                </div>
+
+                {/* 총 투자비용 - 가장 강조 */}
+                <div className="pt-4 border-t border-slate-200">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-base font-medium text-slate-700">총 투자비용</span>
+                    <span className="text-3xl font-bold text-slate-900">
+                      {(listing.totalInvestment / 100000000).toFixed(1)}억원
+                    </span>
+                  </div>
                   {listing.price.isNegotiable && (
-                    <span className="text-sm text-primary-600 font-medium">협의가능</span>
+                    <div className="mt-2 text-right">
+                      <span className="text-sm text-primary-600 font-medium">협의가능</span>
+                    </div>
                   )}
                 </div>
               </div>
@@ -267,7 +272,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
         {relatedListings.length > 0 && (
           <div className="mt-12">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
-              {listing.location.city} 지역 다른 매물
+              {listing.location.province} 지역 다른 매물
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedListings.map((relatedListing) => (

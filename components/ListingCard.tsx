@@ -7,34 +7,45 @@ interface ListingCardProps {
 }
 
 export default function ListingCard({ listing }: ListingCardProps) {
+  // id에서 숫자를 추출하여 매물번호 생성 (예: listing-001 -> SZ-0001)
+  const listingNumber = (listing.listingNumber || `sz-${listing.id.replace(/\D/g, '').padStart(4, '0')}`).toUpperCase()
+
   return (
-    <Link href={`/listings/${listing.slug}`} className="group">
-      <div className="bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
+    <Link href={`/listings/${listing.slug}`} className="group block h-full">
+      <div className="bg-white rounded-lg overflow-hidden border border-grey-200 hover:border-tossBlue transition-all hover:shadow-md flex flex-col h-full">
+        {/* Listing Number - Above Image */}
+        <div className="px-4 pt-4 pb-2">
+          <span className="inline-block px-3 py-1.5 bg-grey-100 text-grey-700 rounded-md text-body font-medium border border-grey-200">
+            {listingNumber}
+          </span>
+        </div>
+
         {/* Thumbnail */}
-        <div className="relative h-48 bg-slate-100 overflow-hidden">
+        <div className="relative h-48 bg-grey-100 overflow-hidden flex-shrink-0">
           <img
             src={listing.thumbnail.url}
             alt={listing.thumbnail.alt}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-200"
           />
+
           {listing.status === 'sold' && (
-            <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center">
+            <div className="absolute inset-0 bg-grey-900/60 flex items-center justify-center">
               <span className="text-white font-bold text-xl">거래완료</span>
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-5 flex flex-col flex-1">
           {/* Title */}
-          <h3 className="font-semibold text-slate-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="text-sub font-semibold text-grey-900 mb-3 line-clamp-2 group-hover:text-tossBlue transition-colors">
             {listing.title}
           </h3>
 
           {/* Location */}
-          <div className="flex items-center text-sm text-slate-600 mb-3">
+          <div className="flex items-center text-body text-grey-600 mb-3">
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-4 h-4 mr-1.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -52,41 +63,42 @@ export default function ListingCard({ listing }: ListingCardProps) {
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-            <span>{listing.location.displayLocation}</span>
+            <span>{listing.location.province}</span>
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center justify-between text-sm text-slate-600 mb-3">
-            <div className="flex items-center space-x-3">
-              <span>{listing.area.pyeong}평</span>
-              <span className="text-slate-300">|</span>
-              <span>{listing.totalSeats}석</span>
+          {/* Area */}
+          <div className="mb-3">
+            <span className="text-body text-grey-600">{listing.area.squareMeter}㎡</span>
+          </div>
+
+          {/* 재정 정보 - 강조 */}
+          <div className="space-y-2.5 mb-3 mt-auto">
+            {/* 권리금 */}
+            <div className="flex items-baseline justify-between">
+              <span className="text-body text-grey-600">권리금</span>
+              <span className="text-sub font-bold text-grey-900">
+                {(listing.premiumAmount / 10000).toLocaleString()}만원
+              </span>
             </div>
-            <span
-              className={`px-2 py-1 rounded text-xs font-medium ${
-                listing.operatingStatus === 'operating'
-                  ? 'bg-success-light text-success-dark'
-                  : 'bg-slate-100 text-slate-600'
-              }`}
-            >
-              {listing.operatingStatus === 'operating' ? '운영중' : '운영종료'}
-            </span>
+
+            {/* 월수익 */}
+            <div className="flex items-baseline justify-between">
+              <span className="text-body text-grey-600">월수익</span>
+              <span className="text-sub font-bold text-tossBlue">
+                {(listing.monthlyProfit / 10000).toLocaleString()}만원
+              </span>
+            </div>
           </div>
 
-          {/* Price */}
-          <div className="flex items-baseline justify-between">
-            <span className="text-xl font-bold text-slate-900">
-              {listing.price.displayText}
-            </span>
-            {listing.price.isNegotiable && (
-              <span className="text-xs text-primary-600 font-medium">협의가능</span>
-            )}
+          {/* 총 투자비용 - 가장 강조 */}
+          <div className="pt-3 border-t border-grey-200">
+            <div className="flex items-baseline justify-between">
+              <span className="text-body font-medium text-grey-700">총 투자비용</span>
+              <span className="text-main font-bold text-grey-900">
+                {(listing.totalInvestment / 100000000).toFixed(1)}억원
+              </span>
+            </div>
           </div>
-
-          {/* Description */}
-          <p className="text-sm text-slate-600 mt-2 line-clamp-2">
-            {listing.shortDescription}
-          </p>
         </div>
       </div>
     </Link>

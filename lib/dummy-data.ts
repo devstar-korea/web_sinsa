@@ -7,18 +7,21 @@ import { Listing, Article } from './types'
 export const dummyListings: Listing[] = [
   {
     id: 'listing-001',
+    listingNumber: 'sz-2847',
     title: '강남역 도보 3분, 리모델링 완료 프리미엄 공유오피스',
     slug: 'gangnam-premium-office-001',
     location: {
       province: '서울',
-      city: '강남구',
-      displayLocation: '강남역 3분',
+      locationKey: '서울',
     },
     price: {
       amount: 280000000,
       displayText: '2억 8천만원',
       isNegotiable: true,
     },
+    premiumAmount: 70000000,  // 권리금 7천만원
+    totalInvestment: 280000000,  // 총 투자비용 2억 8천만원
+    monthlyProfit: 5600000,  // 월수익 560만원
     area: {
       squareMeter: 165,
       pyeong: 50,
@@ -60,18 +63,21 @@ export const dummyListings: Listing[] = [
   },
   {
     id: 'listing-002',
+    listingNumber: 'sz-5139',
     title: '서초역 초역세권, 안정적 수익형 공유오피스',
     slug: 'seocho-stable-office-002',
     location: {
       province: '서울',
-      city: '서초구',
-      displayLocation: '서초역 1분',
+      locationKey: '서울',
     },
     price: {
       amount: 350000000,
       displayText: '3억 5천만원',
       isNegotiable: true,
     },
+    premiumAmount: 85000000,  // 권리금 8천 5백만원
+    totalInvestment: 350000000,  // 총 투자비용 3억 5천만원
+    monthlyProfit: 7000000,  // 월수익 700만원
     area: {
       squareMeter: 198,
       pyeong: 60,
@@ -92,18 +98,21 @@ export const dummyListings: Listing[] = [
   },
   {
     id: 'listing-003',
+    listingNumber: 'sz-7264',
     title: '여의도 IFC몰 인근, 프리미엄 비즈니스 센터',
     slug: 'yeouido-business-center-003',
     location: {
       province: '서울',
-      city: '영등포구',
-      displayLocation: '여의도역 5분',
+      locationKey: '서울',
     },
     price: {
       amount: 520000000,
       displayText: '5억 2천만원',
       isNegotiable: false,
     },
+    premiumAmount: 150000000,  // 권리금 1억 5천만원
+    totalInvestment: 520000000,  // 총 투자비용 5억 2천만원
+    monthlyProfit: 10400000,  // 월수익 1,040만원
     area: {
       squareMeter: 264,
       pyeong: 80,
@@ -128,14 +137,16 @@ export const dummyListings: Listing[] = [
     slug: 'seongsu-hipster-office-004',
     location: {
       province: '서울',
-      city: '성동구',
-      displayLocation: '성수역 7분',
+      locationKey: '서울',
     },
     price: {
       amount: 180000000,
       displayText: '1억 8천만원',
       isNegotiable: true,
     },
+    premiumAmount: 45000000,  // 권리금 4천 5백만원
+    totalInvestment: 180000000,  // 총 투자비용 1억 8천만원
+    monthlyProfit: 3600000,  // 월수익 360만원
     area: {
       squareMeter: 132,
       pyeong: 40,
@@ -160,14 +171,16 @@ export const dummyListings: Listing[] = [
     slug: 'hongdae-creator-space-005',
     location: {
       province: '서울',
-      city: '마포구',
-      displayLocation: '홍대입구역 3분',
+      locationKey: '서울',
     },
     price: {
       amount: 220000000,
       displayText: '2억 2천만원',
       isNegotiable: true,
     },
+    premiumAmount: 55000000,  // 권리금 5천 5백만원
+    totalInvestment: 220000000,  // 총 투자비용 2억 2천만원
+    monthlyProfit: 4400000,  // 월수익 440만원
     area: {
       squareMeter: 149,
       pyeong: 45,
@@ -192,14 +205,16 @@ export const dummyListings: Listing[] = [
     slug: 'pangyo-it-hub-006',
     location: {
       province: '경기',
-      city: '성남시 분당구',
-      displayLocation: '판교역 10분',
+      locationKey: '경기-성남',
     },
     price: {
       amount: 420000000,
       displayText: '4억 2천만원',
       isNegotiable: false,
     },
+    premiumAmount: 120000000,  // 권리금 1억 2천만원
+    totalInvestment: 420000000,  // 총 투자비용 4억 2천만원
+    monthlyProfit: 8400000,  // 월수익 840만원
     area: {
       squareMeter: 231,
       pyeong: 70,
@@ -224,14 +239,16 @@ export const dummyListings: Listing[] = [
     slug: 'seolleung-teheran-007',
     location: {
       province: '서울',
-      city: '강남구',
-      displayLocation: '선릉역 2분',
+      locationKey: '서울',
     },
     price: {
       amount: 380000000,
       displayText: '3억 8천만원',
       isNegotiable: true,
     },
+    premiumAmount: 100000000,  // 권리금 1억원
+    totalInvestment: 380000000,  // 총 투자비용 3억 8천만원
+    monthlyProfit: 7600000,  // 월수익 760만원
     area: {
       squareMeter: 198,
       pyeong: 60,
@@ -256,14 +273,16 @@ export const dummyListings: Listing[] = [
     slug: 'sinnonhyeon-luxury-008',
     location: {
       province: '서울',
-      city: '강남구',
-      displayLocation: '신논현역 1분',
+      locationKey: '서울',
     },
     price: {
       amount: 320000000,
       displayText: '3억 2천만원',
       isNegotiable: true,
     },
+    premiumAmount: 85000000,  // 권리금 8천 5백만원
+    totalInvestment: 320000000,  // 총 투자비용 3억 2천만원
+    monthlyProfit: 6400000,  // 월수익 640만원
     area: {
       squareMeter: 165,
       pyeong: 50,
@@ -288,14 +307,16 @@ export const dummyListings: Listing[] = [
     slug: 'yeoksam-startup-valley-009',
     location: {
       province: '서울',
-      city: '강남구',
-      displayLocation: '역삼역 4분',
+      locationKey: '서울',
     },
     price: {
       amount: 240000000,
       displayText: '2억 4천만원',
       isNegotiable: true,
     },
+    premiumAmount: 60000000,  // 권리금 6천만원
+    totalInvestment: 240000000,  // 총 투자비용 2억 4천만원
+    monthlyProfit: 4800000,  // 월수익 480만원
     area: {
       squareMeter: 149,
       pyeong: 45,
@@ -316,18 +337,20 @@ export const dummyListings: Listing[] = [
   },
   {
     id: 'listing-010',
-    title: '건대입구 대학가, 저렴한 스터디 카페형 공유오피스',
-    slug: 'konkuk-study-cafe-010',
+    title: '인천 송도 국제도시, 첨단 비즈니스 센터',
+    slug: 'songdo-business-center-010',
     location: {
-      province: '서울',
-      city: '광진구',
-      displayLocation: '건대입구역 5분',
+      province: '인천',
+      locationKey: '인천',
     },
     price: {
       amount: 120000000,
       displayText: '1억 2천만원',
       isNegotiable: true,
     },
+    premiumAmount: 30000000,  // 권리금 3천만원
+    totalInvestment: 120000000,  // 총 투자비용 1억 2천만원
+    monthlyProfit: 2400000,  // 월수익 240만원
     area: {
       squareMeter: 99,
       pyeong: 30,
@@ -348,18 +371,20 @@ export const dummyListings: Listing[] = [
   },
   {
     id: 'listing-011',
-    title: '삼성역 코엑스 인근, 글로벌 비즈니스 센터',
-    slug: 'samsung-coex-global-011',
+    title: '부산 서면 중심가, 프리미엄 공유오피스',
+    slug: 'seomyeon-premium-office-011',
     location: {
-      province: '서울',
-      city: '강남구',
-      displayLocation: '삼성역 3분',
+      province: '부산',
+      locationKey: '부산',
     },
     price: {
       amount: 480000000,
       displayText: '4억 8천만원',
       isNegotiable: false,
     },
+    premiumAmount: 140000000,  // 권리금 1억 4천만원
+    totalInvestment: 480000000,  // 총 투자비용 4억 8천만원
+    monthlyProfit: 9600000,  // 월수익 960만원
     area: {
       squareMeter: 231,
       pyeong: 70,
@@ -380,18 +405,20 @@ export const dummyListings: Listing[] = [
   },
   {
     id: 'listing-012',
-    title: '을지로 레트로 감성, 디자이너 작업실',
-    slug: 'euljiro-retro-design-012',
+    title: '대전 둔산동 정부청사 인근 비즈니스 센터',
+    slug: 'dunsan-business-center-012',
     location: {
-      province: '서울',
-      city: '중구',
-      displayLocation: '을지로3가역 8분',
+      province: '대전',
+      locationKey: '대전',
     },
     price: {
       amount: 150000000,
       displayText: '1억 5천만원',
       isNegotiable: true,
     },
+    premiumAmount: 37500000,  // 권리금 3천 7백 5십만원
+    totalInvestment: 150000000,  // 총 투자비용 1억 5천만원
+    monthlyProfit: 3000000,  // 월수익 300만원
     area: {
       squareMeter: 115,
       pyeong: 35,
@@ -416,14 +443,16 @@ export const dummyListings: Listing[] = [
     slug: 'sinchon-freelancer-013',
     location: {
       province: '서울',
-      city: '서대문구',
-      displayLocation: '신촌역 6분',
+      locationKey: '서울',
     },
     price: {
       amount: 140000000,
       displayText: '1억 4천만원',
       isNegotiable: true,
     },
+    premiumAmount: 35000000,  // 권리금 3천 5백만원
+    totalInvestment: 140000000,  // 총 투자비용 1억 4천만원
+    monthlyProfit: 2800000,  // 월수익 280만원
     area: {
       squareMeter: 99,
       pyeong: 30,
@@ -448,14 +477,16 @@ export const dummyListings: Listing[] = [
     slug: 'gwanghwamun-government-014',
     location: {
       province: '서울',
-      city: '종로구',
-      displayLocation: '광화문역 4분',
+      locationKey: '서울',
     },
     price: {
       amount: 390000000,
       displayText: '3억 9천만원',
       isNegotiable: false,
     },
+    premiumAmount: 105000000,  // 권리금 1억 5백만원
+    totalInvestment: 390000000,  // 총 투자비용 3억 9천만원
+    monthlyProfit: 7800000,  // 월수익 780만원
     area: {
       squareMeter: 198,
       pyeong: 60,
@@ -480,14 +511,16 @@ export const dummyListings: Listing[] = [
     slug: 'guro-digital-dev-015',
     location: {
       province: '서울',
-      city: '구로구',
-      displayLocation: '구로디지털단지역 2분',
+      locationKey: '서울',
     },
     price: {
       amount: 260000000,
       displayText: '2억 6천만원',
       isNegotiable: true,
     },
+    premiumAmount: 65000000,  // 권리금 6천 5백만원
+    totalInvestment: 260000000,  // 총 투자비용 2억 6천만원
+    monthlyProfit: 5200000,  // 월수익 520만원
     area: {
       squareMeter: 165,
       pyeong: 50,
@@ -512,14 +545,16 @@ export const dummyListings: Listing[] = [
     slug: 'snu-research-016',
     location: {
       province: '서울',
-      city: '관악구',
-      displayLocation: '서울대입구역 7분',
+      locationKey: '서울',
     },
     price: {
       amount: 170000000,
       displayText: '1억 7천만원',
       isNegotiable: true,
     },
+    premiumAmount: 42500000,  // 권리금 4천 2백 5십만원
+    totalInvestment: 170000000,  // 총 투자비용 1억 7천만원
+    monthlyProfit: 3400000,  // 월수익 340만원
     area: {
       squareMeter: 132,
       pyeong: 40,
@@ -544,14 +579,16 @@ export const dummyListings: Listing[] = [
     slug: 'jamsil-lotte-tower-017',
     location: {
       province: '서울',
-      city: '송파구',
-      displayLocation: '잠실역 8분',
+      locationKey: '서울',
     },
     price: {
       amount: 410000000,
       displayText: '4억 1천만원',
       isNegotiable: false,
     },
+    premiumAmount: 120000000,  // 권리금 1억 2천만원
+    totalInvestment: 410000000,  // 총 투자비용 4억 1천만원
+    monthlyProfit: 8200000,  // 월수익 820만원
     area: {
       squareMeter: 198,
       pyeong: 60,
@@ -576,14 +613,16 @@ export const dummyListings: Listing[] = [
     slug: 'hapjeong-cafe-small-018',
     location: {
       province: '서울',
-      city: '마포구',
-      displayLocation: '합정역 5분',
+      locationKey: '서울',
     },
     price: {
       amount: 130000000,
       displayText: '1억 3천만원',
       isNegotiable: true,
     },
+    premiumAmount: 32500000,  // 권리금 3천 2백 5십만원
+    totalInvestment: 130000000,  // 총 투자비용 1억 3천만원
+    monthlyProfit: 2600000,  // 월수익 260만원
     area: {
       squareMeter: 82,
       pyeong: 25,
@@ -608,14 +647,16 @@ export const dummyListings: Listing[] = [
     slug: 'gangnam-daero-hub-019',
     location: {
       province: '서울',
-      city: '강남구',
-      displayLocation: '강남역 8분',
+      locationKey: '서울',
     },
     price: {
       amount: 580000000,
       displayText: '5억 8천만원',
       isNegotiable: false,
     },
+    premiumAmount: 170000000,  // 권리금 1억 7천만원
+    totalInvestment: 580000000,  // 총 투자비용 5억 8천만원
+    monthlyProfit: 11600000,  // 월수익 1,160만원
     area: {
       squareMeter: 330,
       pyeong: 100,
@@ -640,14 +681,16 @@ export const dummyListings: Listing[] = [
     slug: 'yongsan-ipark-family-020',
     location: {
       province: '서울',
-      city: '용산구',
-      displayLocation: '용산역 6분',
+      locationKey: '서울',
     },
     price: {
       amount: 190000000,
       displayText: '1억 9천만원',
       isNegotiable: true,
     },
+    premiumAmount: 47500000,  // 권리금 4천 7백 5십만원
+    totalInvestment: 190000000,  // 총 투자비용 1억 9천만원
+    monthlyProfit: 3800000,  // 월수익 380만원
     area: {
       squareMeter: 132,
       pyeong: 40,

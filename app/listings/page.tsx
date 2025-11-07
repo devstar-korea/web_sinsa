@@ -5,47 +5,78 @@ import ListingCard from '@/components/ListingCard'
 import { dummyListings } from '@/lib/dummy-data'
 import { Listing } from '@/lib/types'
 
-type SortOption = 'latest' | 'oldest' | 'price_low' | 'price_high' | 'area_large' | 'area_small'
+type SortOption = 'area_large' | 'area_small'
+
+// 한국 지역 목록 (가나다순 정렬)
+const koreanLocations = [
+  { value: '강원', label: '강원도 (전체)', type: 'province' },
+  { value: '강원-원주', label: '강원 원주시', type: 'city' },
+  { value: '강원-춘천', label: '강원 춘천시', type: 'city' },
+  { value: '경기', label: '경기도 (전체)', type: 'province' },
+  { value: '경기-고양', label: '경기 고양시', type: 'city' },
+  { value: '경기-남양주', label: '경기 남양주시', type: 'city' },
+  { value: '경기-부천', label: '경기 부천시', type: 'city' },
+  { value: '경기-성남', label: '경기 성남시', type: 'city' },
+  { value: '경기-수원', label: '경기 수원시', type: 'city' },
+  { value: '경기-안산', label: '경기 안산시', type: 'city' },
+  { value: '경기-안양', label: '경기 안양시', type: 'city' },
+  { value: '경기-용인', label: '경기 용인시', type: 'city' },
+  { value: '경기-평택', label: '경기 평택시', type: 'city' },
+  { value: '경기-화성', label: '경기 화성시', type: 'city' },
+  { value: '경남', label: '경상남도 (전체)', type: 'province' },
+  { value: '경남-김해', label: '경남 김해시', type: 'city' },
+  { value: '경남-창원', label: '경남 창원시', type: 'city' },
+  { value: '경북', label: '경상북도 (전체)', type: 'province' },
+  { value: '경북-포항', label: '경북 포항시', type: 'city' },
+  { value: '광주', label: '광주광역시', type: 'metro' },
+  { value: '대구', label: '대구광역시', type: 'metro' },
+  { value: '대전', label: '대전광역시', type: 'metro' },
+  { value: '부산', label: '부산광역시', type: 'metro' },
+  { value: '서울', label: '서울특별시', type: 'metro' },
+  { value: '세종', label: '세종특별자치시', type: 'metro' },
+  { value: '울산', label: '울산광역시', type: 'metro' },
+  { value: '인천', label: '인천광역시', type: 'metro' },
+  { value: '전남', label: '전라남도 (전체)', type: 'province' },
+  { value: '전북', label: '전북특별자치도 (전체)', type: 'province' },
+  { value: '전북-전주', label: '전북 전주시', type: 'city' },
+  { value: '제주', label: '제주특별자치도', type: 'province' },
+  { value: '충남', label: '충청남도 (전체)', type: 'province' },
+  { value: '충남-천안', label: '충남 천안시', type: 'city' },
+  { value: '충북', label: '충청북도 (전체)', type: 'province' },
+  { value: '충북-청주', label: '충북 청주시', type: 'city' },
+].sort((a, b) => a.label.localeCompare(b.label, 'ko-KR'))
 
 export default function ListingsPage() {
-  const [selectedCity, setSelectedCity] = useState<string>('all')
-  const [selectedStatus, setSelectedStatus] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<SortOption>('latest')
+  const [selectedLocation, setSelectedLocation] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<SortOption>('area_large')
   const [showFilters, setShowFilters] = useState(false)
-
-  // 고유한 도시 목록 추출
-  const cities = useMemo(() => {
-    const citySet = new Set(dummyListings.map((listing) => listing.location.city))
-    return Array.from(citySet).sort()
-  }, [])
 
   // 필터링 및 정렬된 매물 목록
   const filteredAndSortedListings = useMemo(() => {
     let filtered = dummyListings.filter((listing) => {
-      // 도시 필터
-      if (selectedCity !== 'all' && listing.location.city !== selectedCity) {
-        return false
+      // 지역 필터
+      if (selectedLocation === 'all') {
+        return true
       }
 
-      // 상태 필터
-      if (selectedStatus !== 'all' && listing.status !== selectedStatus) {
-        return false
+      const locationKey = listing.location.locationKey || listing.location.province
+
+      // 정확히 일치하는 경우
+      if (locationKey === selectedLocation) {
+        return true
       }
 
-      return true
+      // 도 단위 필터: 경기 선택 시 경기-수원, 경기-성남 등도 포함
+      if (locationKey && locationKey.startsWith(selectedLocation + '-')) {
+        return true
+      }
+
+      return false
     })
 
-    // 정렬
+    // 정렬 (면적 기준만)
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
-        case 'latest':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        case 'oldest':
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        case 'price_low':
-          return a.price.amount - b.price.amount
-        case 'price_high':
-          return b.price.amount - a.price.amount
         case 'area_large':
           return b.area.pyeong - a.area.pyeong
         case 'area_small':
@@ -56,7 +87,7 @@ export default function ListingsPage() {
     })
 
     return sorted
-  }, [selectedCity, selectedStatus, sortBy])
+  }, [selectedLocation, sortBy])
 
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -77,47 +108,29 @@ export default function ListingsPage() {
             <div className="bg-white rounded-lg border border-slate-200 p-6 sticky top-20">
               <h2 className="text-lg font-semibold text-slate-900 mb-4">필터</h2>
 
-              {/* City Filter */}
+              {/* Location Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   지역
                 </label>
                 <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="all">전체</option>
-                  {cities.map((city) => (
-                    <option key={city} value={city}>
-                      {city}
+                  <option value="all">전국</option>
+                  {koreanLocations.map((location) => (
+                    <option key={location.value} value={location.value}>
+                      {location.label}
                     </option>
                   ))}
-                </select>
-              </div>
-
-              {/* Status Filter */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  상태
-                </label>
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="all">전체</option>
-                  <option value="active">판매중</option>
-                  <option value="pending">검토중</option>
-                  <option value="sold">거래완료</option>
                 </select>
               </div>
 
               {/* Reset Button */}
               <button
                 onClick={() => {
-                  setSelectedCity('all')
-                  setSelectedStatus('all')
+                  setSelectedLocation('all')
                 }}
                 className="w-full px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
               >
@@ -159,10 +172,6 @@ export default function ListingsPage() {
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
                   className="flex-1 sm:flex-none px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="latest">최신순</option>
-                  <option value="oldest">오래된순</option>
-                  <option value="price_low">가격 낮은순</option>
-                  <option value="price_high">가격 높은순</option>
                   <option value="area_large">면적 큰순</option>
                   <option value="area_small">면적 작은순</option>
                 </select>
@@ -185,46 +194,28 @@ export default function ListingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {/* City Filter */}
+                  {/* Location Filter */}
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       지역
                     </label>
                     <select
-                      value={selectedCity}
-                      onChange={(e) => setSelectedCity(e.target.value)}
+                      value={selectedLocation}
+                      onChange={(e) => setSelectedLocation(e.target.value)}
                       className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     >
-                      <option value="all">전체</option>
-                      {cities.map((city) => (
-                        <option key={city} value={city}>
-                          {city}
+                      <option value="all">전국</option>
+                      {koreanLocations.map((location) => (
+                        <option key={location.value} value={location.value}>
+                          {location.label}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Status Filter */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">
-                      상태
-                    </label>
-                    <select
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="all">전체</option>
-                      <option value="active">판매중</option>
-                      <option value="pending">검토중</option>
-                      <option value="sold">거래완료</option>
-                    </select>
-                  </div>
-
                   <button
                     onClick={() => {
-                      setSelectedCity('all')
-                      setSelectedStatus('all')
+                      setSelectedLocation('all')
                     }}
                     className="w-full px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50"
                   >

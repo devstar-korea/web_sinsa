@@ -1,7 +1,7 @@
 {
-  "name": "web_sinsa",
+  "name": "sharezone",
   "version": "1.0.0",
-  "description": "",
+  "description": "SHAREZONE - 공유오피스 M&A 전문 플랫폼",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",

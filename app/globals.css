@@ -13,10 +13,26 @@
 
 @layer base {
   * {
-    @apply border-slate-200;
+    @apply border-grey-200;
   }
 
   body {
-    @apply bg-white text-slate-900 antialiased;
+    @apply bg-grey-50 text-grey-900 antialiased;
+    font-size: 18px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* Typography */
+  h1, h2, h3 {
+    @apply font-bold text-grey-900;
+  }
+
+  h4, h5, h6 {
+    @apply font-medium text-grey-800;
+  }
+
+  p {
+    @apply text-body text-grey-700;
   }
 }

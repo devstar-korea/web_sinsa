@@ -4,29 +4,34 @@
 
 export interface Listing {
   id: string
+  listingNumber?: string  // 매물번호 (sz-xxxx), optional - 없으면 id 기반으로 자동 생성
   title: string
   slug: string
 
   // 위치
   location: {
     province: string
-    city: string
-    displayLocation: string
+    locationKey?: string
   }
 
-  // 가격
+  // 가격 정보
   price: {
     amount: number
     displayText: string
     isNegotiable: boolean
   }
 
+  // 재정 정보 (공개)
+  premiumAmount: number  // 권리금
+  totalInvestment: number  // 총 투자비용 (권리금 + 보증금)
+  monthlyProfit: number  // 월수익
+
   // 공간 정보
   area: {
     squareMeter: number
-    pyeong: number
+    pyeong: number  // 내부 계산용 (표시하지 않음)
   }
-  totalSeats: number
+  totalSeats: number  // 내부 데이터용 (표시하지 않음)
 
   // 이미지
   thumbnail: {
@@ -65,14 +70,17 @@ export type ListingCard = Pick<
   | 'slug'
   | 'location'
   | 'price'
+  | 'premiumAmount'
+  | 'totalInvestment'
+  | 'monthlyProfit'
   | 'area'
-  | 'totalSeats'
   | 'thumbnail'
   | 'shortDescription'
   | 'status'
-  | 'operatingStatus'
   | 'createdAt'
->
+> & {
+  listingNumber?: string
+}
 
 // ============================================
 // 정보 콘텐츠 (Article)
