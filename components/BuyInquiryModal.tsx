@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 interface BuyInquiryModalProps {
   isOpen: boolean
@@ -55,97 +58,98 @@ export default function BuyInquiryModal({ isOpen, onClose }: BuyInquiryModalProp
           <div className="space-y-4">
             {/* 신청인 성함 */}
             <div>
-              <input
+              <Input
                 type="text"
                 name="name"
                 required
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="신청인 성함을 입력해주세요"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body"
+                className="h-12 text-body"
               />
             </div>
 
             {/* 연락처 */}
             <div>
-              <input
+              <Input
                 type="tel"
                 name="phone"
                 required
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="연락처를 입력해주세요"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body"
+                className="h-12 text-body"
               />
             </div>
 
             {/* 이메일 */}
             <div>
-              <input
+              <Input
                 type="email"
                 name="email"
                 required
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="이메일을 입력해주세요"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body"
+                className="h-12 text-body"
               />
             </div>
 
             {/* 창업희망지역 */}
             <div>
-              <input
+              <Input
                 type="text"
                 name="desiredLocation"
                 required
                 value={formData.desiredLocation}
                 onChange={handleChange}
                 placeholder="창업희망지역을 입력해주세요"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body"
+                className="h-12 text-body"
               />
             </div>
 
             {/* 거주지역 */}
             <div>
-              <input
+              <Input
                 type="text"
                 name="residenceLocation"
                 required
                 value={formData.residenceLocation}
                 onChange={handleChange}
                 placeholder="거주지역을 입력해주세요"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body"
+                className="h-12 text-body"
               />
             </div>
 
             {/* 상담신청내용 */}
             <div>
-              <textarea
+              <Textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
                 placeholder="상담 내용을 기재해주세요 (선택)"
-                className="w-full px-4 py-3 border border-grey-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tossBlue focus:border-transparent text-body resize-none"
+                className="text-body resize-none"
               />
             </div>
           </div>
 
           {/* Submit Button */}
           <div className="mt-6 flex gap-3">
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="flex-1 px-6 py-4 bg-grey-100 text-grey-700 rounded-lg font-bold hover:bg-grey-200 transition-colors text-body"
+              className="flex-1 h-12 text-body font-bold"
             >
               취소
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="flex-1 px-6 py-4 bg-tossBlue text-white rounded-lg font-bold hover:bg-primary-600 transition-colors text-body"
+              className="flex-1 h-12 text-body font-bold"
             >
               상담 신청하기
-            </button>
+            </Button>
           </div>
         </form>
       </div>
