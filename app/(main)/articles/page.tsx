@@ -14,7 +14,7 @@ const categoryLabels = {
   market: '트렌드',
 }
 
-const BLOG_URL = 'https://blog.naver.com/sharezone' // TODO: 실제 블로그 URL로 변경
+const BLOG_URL = 'https://blog.naver.com/sharezone_'
 
 export default function ArticlesPage() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'guide' | 'tips' | 'market'>('all')
