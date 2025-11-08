@@ -39,8 +39,13 @@ const listingFormSchema = z.object({
   locationKey: z.string().optional(),
   squareMeter: z.number().min(1, '면적을 입력해주세요'),
   totalRooms: z.number().min(1, '룸 개수를 입력해주세요'),
-  operatingStatus: z.enum(['operating', 'closed']),
   openedAt: z.string().min(1, '오픈일을 선택해주세요'),
+
+  // 주차 정보
+  parkingFreeSpaces: z.string().optional(),
+  parkingMonthlyMethod: z.string().optional(),
+  parkingMonthlyFee: z.string().optional(),
+
   priceAmount: z.number().min(0, '가격을 입력해주세요'),
   isNegotiable: z.boolean(),
   premiumAmount: z.number().min(0, '권리금을 입력해주세요'),
@@ -73,8 +78,10 @@ export default function EditListingPage() {
       locationKey: '',
       squareMeter: 0,
       totalRooms: 0,
-      operatingStatus: 'operating',
       openedAt: '',
+      parkingFreeSpaces: '',
+      parkingMonthlyMethod: '',
+      parkingMonthlyFee: '',
       priceAmount: 0,
       isNegotiable: false,
       premiumAmount: 0,
@@ -113,8 +120,10 @@ export default function EditListingPage() {
           locationKey: foundListing.location.locationKey || '',
           squareMeter: foundListing.area.squareMeter,
           totalRooms: foundListing.totalRooms,
-          operatingStatus: foundListing.operatingStatus,
           openedAt: foundListing.openedAt.split('T')[0],
+          parkingFreeSpaces: foundListing.parkingInfo?.freeSpaces || '',
+          parkingMonthlyMethod: foundListing.parkingInfo?.monthlyMethod || '',
+          parkingMonthlyFee: foundListing.parkingInfo?.monthlyFee || '',
           priceAmount: foundListing.price.amount,
           isNegotiable: foundListing.price.isNegotiable ?? false,
           premiumAmount: foundListing.premiumAmount,
@@ -171,6 +180,11 @@ export default function EditListingPage() {
           pyeong,
         },
         totalRooms: data.totalRooms,
+        parkingInfo: data.parkingFreeSpaces || data.parkingMonthlyMethod || data.parkingMonthlyFee ? {
+          freeSpaces: data.parkingFreeSpaces || '',
+          monthlyMethod: data.parkingMonthlyMethod || '',
+          monthlyFee: data.parkingMonthlyFee || '',
+        } : undefined,
         thumbnail: {
           url: data.thumbnailUrl || '/images/placeholder.jpg',
           alt: data.title,
@@ -178,7 +192,7 @@ export default function EditListingPage() {
         shortDescription: data.shortDescription,
         description: data.description,
         status: data.status,
-        operatingStatus: data.operatingStatus,
+        operatingStatus: 'operating' as const,  // 운영중만 등록 가능
         openedAt: data.openedAt,
         isPremium: data.isPremium,
         updatedAt: new Date().toISOString(),
@@ -254,7 +268,7 @@ export default function EditListingPage() {
           <Tabs value={currentTab} onValueChange={setCurrentTab}>
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="basic">기본정보</TabsTrigger>
-              <TabsTrigger value="finance">재정정보</TabsTrigger>
+              <TabsTrigger value="finance">매매 정보</TabsTrigger>
               <TabsTrigger value="images">이미지</TabsTrigger>
               <TabsTrigger value="description">설명</TabsTrigger>
             </TabsList>
@@ -380,45 +394,70 @@ export default function EditListingPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="operatingStatus"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>운영 상태 *</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="operating">운영중</SelectItem>
-                              <SelectItem value="closed">폐업</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  {/* 오픈일 */}
+                  <FormField
+                    control={form.control}
+                    name="openedAt"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>오픈일 *</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          운영중인 매장만 등록 가능합니다
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                    <FormField
-                      control={form.control}
-                      name="openedAt"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>오픈일 *</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  {/* 주차 정보 */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-grey-900">주차 정보</h4>
+                    <div className="grid grid-cols-3 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="parkingFreeSpaces"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>무료주차 대수</FormLabel>
+                            <FormControl>
+                              <Input placeholder="예: 2대" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="parkingMonthlyMethod"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>입주사 월주차 방식</FormLabel>
+                            <FormControl>
+                              <Input placeholder="예: 선착순 배정" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="parkingMonthlyFee"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>입주사 월주차 요금</FormLabel>
+                            <FormControl>
+                              <Input placeholder="예: 월 10만원" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-end gap-2">
@@ -426,18 +465,18 @@ export default function EditListingPage() {
                       type="button"
                       onClick={() => setCurrentTab('finance')}
                     >
-                      다음: 재정정보
+                      다음: 매매 정보
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* 재정정보 탭 */}
+            {/* 매매 정보 탭 */}
             <TabsContent value="finance">
               <Card>
                 <CardHeader>
-                  <CardTitle>재정정보</CardTitle>
+                  <CardTitle>매매 정보</CardTitle>
                   <CardDescription>
                     매물의 재정 정보를 수정해주세요
                   </CardDescription>

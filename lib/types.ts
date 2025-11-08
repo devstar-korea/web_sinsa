@@ -33,6 +33,13 @@ export interface Listing {
   }
   totalRooms: number  // 룸 개수 (좌석 수 → 룸 개수로 변경)
 
+  // 주차 정보
+  parkingInfo?: {
+    freeSpaces: string        // 무료주차 대수 (예: "2대")
+    monthlyMethod: string     // 입주사 월주차 방식 (예: "선착순 배정")
+    monthlyFee: string        // 입주사 월주차 요금 (예: "월 10만원")
+  }
+
   // 이미지
   thumbnail: {
     url: string
@@ -51,12 +58,16 @@ export interface Listing {
 
   // 상태
   status: 'active' | 'pending' | 'hidden' | 'sold'
-  operatingStatus: 'operating' | 'closed'
+  operatingStatus: 'operating'  // 운영중인 매장만 등록 가능
 
   // 메타
   openedAt: string
   viewCount: number
   isPremium: boolean
+
+  // Soft Delete
+  deletedAt?: string
+  deletedBy?: string  // 관리자 ID
 
   createdAt: string
   updatedAt: string

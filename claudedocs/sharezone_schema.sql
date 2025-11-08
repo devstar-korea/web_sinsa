@@ -43,6 +43,11 @@ CREATE TABLE sharezone.listings (
   area_square_meter DECIMAL(10, 2) NOT NULL,
   area_pyeong DECIMAL(10, 2) NOT NULL,
 
+  -- 주차 정보
+  parking_free_spaces VARCHAR(100),      -- 무료주차 대수
+  parking_monthly_method VARCHAR(200),   -- 입주사 월주차 방식
+  parking_monthly_fee VARCHAR(100),      -- 입주사 월주차 요금
+
   -- 재정 정보
   price_amount BIGINT NOT NULL,
   price_display_text VARCHAR(100),
@@ -57,12 +62,16 @@ CREATE TABLE sharezone.listings (
 
   -- 상태
   status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'pending', 'hidden', 'sold')),
-  operating_status VARCHAR(20) NOT NULL DEFAULT 'operating',
+  operating_status VARCHAR(20) NOT NULL DEFAULT 'operating' CHECK (operating_status = 'operating'),  -- 운영중만 등록 가능
 
   -- 메타 정보
   opened_at DATE,
   view_count INTEGER DEFAULT 0,
   is_premium BOOLEAN DEFAULT false,
+
+  -- Soft Delete (30일 보관 후 완전 삭제)
+  deleted_at TIMESTAMP WITH TIME ZONE,
+  deleted_by UUID REFERENCES sharezone.admins(id),
 
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

@@ -702,7 +702,7 @@ export const dummyListings: Listing[] = [
     },
     shortDescription: '아이파크몰 인근, 육아맘/파파 프리랜서 다수. 키즈 공간 별도, 월 매출 920만원',
     status: 'hidden',
-    operatingStatus: 'closed',
+    operatingStatus: 'operating',  // 운영중인 매장만 등록 가능
     openedAt: '2022-10-05',
     viewCount: 145,
     isPremium: false,
