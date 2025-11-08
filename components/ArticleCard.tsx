@@ -1,4 +1,5 @@
-import Link from 'next/link'
+'use client'
+
 import { Eye } from 'lucide-react'
 import { ArticleCard as ArticleCardType } from '@/lib/types'
 import { Card } from '@/components/ui/card'
@@ -21,8 +22,14 @@ const categoryColors = {
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
+  const handleCardClick = () => {
+    if (article.externalUrl) {
+      window.open(article.externalUrl, '_blank')
+    }
+  }
+
   return (
-    <Link href={`/articles/${article.slug}`} className="group">
+    <div onClick={handleCardClick} className="group cursor-pointer">
       <Card className="overflow-hidden border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
         {/* Thumbnail */}
         <div className="relative h-48 bg-slate-100 overflow-hidden">
@@ -79,6 +86,6 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </div>
         </div>
       </Card>
-    </Link>
+    </div>
   )
 }
