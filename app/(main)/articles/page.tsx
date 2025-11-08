@@ -32,10 +32,10 @@ export default function ArticlesPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-grey-900 mb-4">
-              뉴스 & 노하우
+              비즈니스 인사이트
             </h1>
             <p className="text-xl text-grey-600">
-              공유오피스 운영과 관련된 유용한 정보를 공유합니다
+              공유오피스 창업·운영·매각 노하우를 확인하세요
             </p>
           </div>
         </div>
