@@ -31,7 +31,7 @@ export interface Listing {
     squareMeter: number
     pyeong: number  // 내부 계산용 (표시하지 않음)
   }
-  totalSeats: number  // 내부 데이터용 (표시하지 않음)
+  totalRooms: number  // 룸 개수 (좌석 수 → 룸 개수로 변경)
 
   // 이미지
   thumbnail: {
@@ -109,6 +109,14 @@ export interface Article {
   isFeatured: boolean
   tags?: string[]
 
+  // 블로그 API 연동
+  isImported: boolean
+  blogPlatform?: string  // 'tistory' | 'naver' | 'wordpress'
+  externalId?: string
+  externalUrl?: string
+  importedAt?: string
+  lastSyncedAt?: string
+
   publishedAt: string
   createdAt: string
   updatedAt: string
@@ -149,10 +157,11 @@ export interface PurchaseInquiry {
   hasExperience?: boolean
 
   // 상태
-  status: 'pending' | 'in_progress' | 'completed' | 'canceled'
+  status: 'pending' | 'contacted' | 'qualified' | 'converted' | 'rejected'
+  assignedTo?: string  // 관리자 ID
   adminNotes?: string
 
-  deviceType: 'mobile' | 'tablet' | 'desktop'
+  deviceType?: 'mobile' | 'tablet' | 'desktop'
 
   createdAt: string
   updatedAt: string
@@ -180,12 +189,12 @@ export interface RegisterInquiry {
   operatingStatus?: string
 
   // 상태
-  status: 'pending' | 'in_progress' | 'completed' | 'canceled'
+  status: 'pending' | 'contacted' | 'qualified' | 'converted' | 'rejected'
+  assignedTo?: string  // 관리자 ID
   adminNotes?: string
-
   linkedListingId?: string
 
-  deviceType: 'mobile' | 'tablet' | 'desktop'
+  deviceType?: 'mobile' | 'tablet' | 'desktop'
 
   createdAt: string
   updatedAt: string
@@ -230,4 +239,45 @@ export interface ArticleFilter {
   category?: 'guide' | 'tips' | 'market'
   featured?: boolean
   sort?: 'latest' | 'oldest' | 'popular'
+}
+
+// ============================================
+// 관리자 (Admin) - 관리자 페이지 전용
+// ============================================
+
+export interface Admin {
+  id: string
+  email: string
+  name: string
+  role: 'super_admin' | 'admin' | 'staff'
+  createdAt: string
+  updatedAt: string
+}
+
+// ============================================
+// 매물 히스토리 (ListingHistory)
+// ============================================
+
+export interface ListingHistory {
+  id: string
+  listingId: string
+  action: 'created' | 'updated' | 'deleted' | 'status_changed' | 'image_added' | 'image_removed'
+  adminId: string
+  adminName: string
+  changes?: Record<string, any>
+  note?: string
+  createdAt: string
+}
+
+// ============================================
+// 이메일 설정 (EmailConfig)
+// ============================================
+
+export interface EmailConfig {
+  id: string
+  key: string
+  value: string
+  description?: string
+  updatedAt: string
+  updatedBy?: string
 }
