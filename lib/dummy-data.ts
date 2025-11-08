@@ -1006,6 +1006,147 @@ export function getArticleBySlug(slug: string): Article | undefined {
   return dummyArticles.find((article) => article.slug === slug)
 }
 
+// ============================================
+// 블로그 연동 아티클 더미 데이터 (관리자 페이지 전용)
+// ============================================
+
+export const dummyBlogArticles: Article[] = [
+  {
+    id: 'blog-article-001',
+    title: '공유오피스 최신 트렌드 분석',
+    slug: 'latest-coworking-trends',
+    category: 'market',
+    excerpt: '2025년 공유오피스 시장의 변화와 새로운 트렌드를 심층 분석합니다. 입주자 니즈와 운영 전략의 변화를 살펴봅니다.',
+    thumbnail: {
+      url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+      alt: '공유오피스 트렌드',
+    },
+    author: {
+      name: 'SHAREZONE',
+    },
+    viewCount: 456,
+    isFeatured: false,
+    isImported: true,
+    blogPlatform: 'naver',
+    externalUrl: 'https://blog.naver.com/sharezone/trend-2025',
+    importedAt: '2025-11-08T10:00:00Z',
+    lastSyncedAt: '2025-11-08T10:00:00Z',
+    tags: ['트렌드', '시장분석'],
+    publishedAt: '2025-11-08T09:00:00Z',
+    createdAt: '2025-11-08T10:00:00Z',
+    updatedAt: '2025-11-08T10:00:00Z',
+  },
+  {
+    id: 'blog-article-002',
+    title: '공간 공유 비즈니스 운영 노하우',
+    slug: 'space-sharing-business-tips',
+    category: 'tips',
+    excerpt: '성공적인 공유오피스 운영을 위한 실전 팁을 공유합니다. 회원 관리부터 수익 극대화까지 현장 경험을 바탕으로 작성했습니다.',
+    thumbnail: {
+      url: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800&h=600&fit=crop',
+      alt: '비즈니스 운영',
+    },
+    author: {
+      name: 'SHAREZONE',
+    },
+    viewCount: 328,
+    isFeatured: false,
+    isImported: true,
+    blogPlatform: 'naver',
+    externalUrl: 'https://blog.naver.com/sharezone/operation-tips',
+    importedAt: '2025-11-07T14:30:00Z',
+    lastSyncedAt: '2025-11-07T14:30:00Z',
+    tags: ['운영', '노하우'],
+    publishedAt: '2025-11-07T09:00:00Z',
+    createdAt: '2025-11-07T14:30:00Z',
+    updatedAt: '2025-11-07T14:30:00Z',
+  },
+  {
+    id: 'blog-article-003',
+    title: '성공적인 공유오피스 창업 가이드',
+    slug: 'successful-coworking-startup',
+    category: 'guide',
+    excerpt: '공유오피스 창업을 준비하시나요? 입지 선정부터 인테리어, 마케팅까지 단계별로 안내합니다.',
+    thumbnail: {
+      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
+      alt: '창업 가이드',
+    },
+    author: {
+      name: 'SHAREZONE',
+    },
+    viewCount: 612,
+    isFeatured: true,
+    isImported: true,
+    blogPlatform: 'naver',
+    externalUrl: 'https://blog.naver.com/sharezone/startup-guide',
+    importedAt: '2025-11-06T11:00:00Z',
+    lastSyncedAt: '2025-11-06T11:00:00Z',
+    tags: ['창업', '가이드'],
+    publishedAt: '2025-11-06T09:00:00Z',
+    createdAt: '2025-11-06T11:00:00Z',
+    updatedAt: '2025-11-06T11:00:00Z',
+  },
+  {
+    id: 'blog-article-004',
+    title: '스타트업을 위한 공간 선택법',
+    slug: 'space-selection-for-startups',
+    category: 'guide',
+    excerpt: '스타트업에게 적합한 공유오피스를 선택하는 방법을 알려드립니다. 비용, 위치, 시설을 고려한 체크리스트를 제공합니다.',
+    thumbnail: {
+      url: 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=800&h=600&fit=crop',
+      alt: '스타트업 공간',
+    },
+    author: {
+      name: 'SHAREZONE',
+    },
+    viewCount: 234,
+    isFeatured: false,
+    isImported: true,
+    blogPlatform: 'naver',
+    externalUrl: 'https://blog.naver.com/sharezone/startup-space',
+    importedAt: '2025-11-05T15:20:00Z',
+    lastSyncedAt: '2025-11-05T15:20:00Z',
+    tags: ['스타트업', '선택'],
+    publishedAt: '2025-11-05T09:00:00Z',
+    createdAt: '2025-11-05T15:20:00Z',
+    updatedAt: '2025-11-05T15:20:00Z',
+  },
+  {
+    id: 'blog-article-005',
+    title: '공유오피스 임대차 계약 팁',
+    slug: 'lease-contract-tips',
+    category: 'tips',
+    excerpt: '공유오피스 임대차 계약 시 주의할 점을 정리했습니다. 임대인, 임차인 모두에게 유용한 체크리스트입니다.',
+    thumbnail: {
+      url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=600&fit=crop',
+      alt: '계약서',
+    },
+    author: {
+      name: 'SHAREZONE',
+    },
+    viewCount: 189,
+    isFeatured: false,
+    isImported: true,
+    blogPlatform: 'naver',
+    externalUrl: 'https://blog.naver.com/sharezone/lease-tips',
+    importedAt: '2025-11-04T10:45:00Z',
+    lastSyncedAt: '2025-11-04T10:45:00Z',
+    tags: ['임대차', '계약'],
+    publishedAt: '2025-11-04T09:00:00Z',
+    createdAt: '2025-11-04T10:45:00Z',
+    updatedAt: '2025-11-04T10:45:00Z',
+  },
+]
+
+// 블로그 아티클 헬퍼 함수
+export function getAllBlogArticles(): Article[] {
+  return dummyBlogArticles
+}
+
+export function getBlogArticleById(id: string): Article | undefined {
+  return dummyBlogArticles.find((article) => article.id === id)
+}
+
 // 지역별 매물 필터링
 export function getListingsByLocation(province: string): Listing[] {
   return dummyListings.filter(
