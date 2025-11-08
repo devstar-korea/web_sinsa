@@ -1,18 +1,52 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import FeaturedListings from '@/components/FeaturedListings'
 import FeaturedArticles from '@/components/FeaturedArticles'
 import SellInquiryModal from '@/components/SellInquiryModal'
 import BuyInquiryModal from '@/components/BuyInquiryModal'
-import { getLatestListings, getFeaturedArticles } from '@/lib/dummy-data'
+import { getAllListings } from '@/lib/api/listings'
+import { getFeaturedArticles } from '@/lib/api/articles'
+import { Loader2 } from 'lucide-react'
+import type { Listing, Article } from '@/lib/types'
 
 export default function Home() {
-  const latestListings = getLatestListings(20) // 모든 매물 가져오기
-  const featuredArticles = getFeaturedArticles() // 모든 아티클 가져오기
+  const [listings, setListings] = useState<Listing[]>([])
+  const [articles, setArticles] = useState<Article[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [isSellModalOpen, setIsSellModalOpen] = useState(false)
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false)
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    try {
+      setIsLoading(true)
+      const [listingsData, articlesData] = await Promise.all([
+        getAllListings(),
+        getFeaturedArticles(),
+      ])
+      setListings(listingsData || [])
+      setArticles(articlesData || [])
+    } catch (err) {
+      console.error('데이터 로딩 실패:', err)
+      setListings([])
+      setArticles([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="bg-grey-50">
@@ -21,7 +55,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-main-xl text-white mb-8">
-              <span className="block mb-3">리스크 없이 만실!</span>
+              <span className="block mb-3">운영 리스크 없이 만실!</span>
               수익 검증된 공유오피스에 투자하세요
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -55,7 +89,7 @@ export default function Home() {
       </section>
 
       {/* Featured Listings Section */}
-      <FeaturedListings initialListings={latestListings} />
+      <FeaturedListings initialListings={listings} />
 
       {/* How It Works Section */}
       <section className="py-16 md:py-20 bg-white">
@@ -122,7 +156,7 @@ export default function Home() {
       </section>
 
       {/* Featured Articles Section */}
-      <FeaturedArticles initialArticles={featuredArticles} />
+      <FeaturedArticles initialArticles={articles} />
 
       {/* CTA Section */}
       <section className="py-16 md:py-20 bg-tossBlue">

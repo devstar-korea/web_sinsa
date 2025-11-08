@@ -58,52 +58,74 @@ export default function FeaturedArticles({ initialArticles }: FeaturedArticlesPr
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {initialArticles.slice(0, displayCount).map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
-
-        <div className="mt-8 text-center">
-          {hasMore ? (
-            <button
-              onClick={handleLoadMore}
-              className="inline-flex items-center px-8 py-3 bg-white border-2 border-tossBlue text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors text-body"
+        {initialArticles.length === 0 ? (
+          <div className="bg-white rounded-lg border border-grey-200 p-12 text-center">
+            <svg
+              className="w-16 h-16 mx-auto text-grey-300 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              더보기
-              <svg
-                className="w-5 h-5 ml-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              <button
-                onClick={handleLoadMore}
-                className={`inline-flex items-center px-8 py-3 bg-grey-100 text-grey-500 rounded-lg font-medium cursor-default text-body ${
-                  bouncing ? 'animate-bounce' : ''
-                }`}
-              >
-                모든 콘텐츠를 확인했습니다
-              </button>
-              <Link
-                href="/articles"
-                className="text-body text-tossBlue font-medium hover:text-primary-600"
-              >
-                전체 콘텐츠 보기 →
-              </Link>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <p className="text-grey-600 mb-2">현재 등록된 데이터가 없습니다</p>
+            <p className="text-sm text-grey-500">Supabase에 테스트 데이터를 삽입해주세요</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {initialArticles.slice(0, displayCount).map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
             </div>
-          )}
-        </div>
+
+            <div className="mt-8 text-center">
+              {hasMore ? (
+                <button
+                  onClick={handleLoadMore}
+                  className="inline-flex items-center px-8 py-3 bg-white border-2 border-tossBlue text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors text-body"
+                >
+                  더보기
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <div className="flex flex-col items-center gap-4">
+                  <button
+                    onClick={handleLoadMore}
+                    className={`inline-flex items-center px-8 py-3 bg-grey-100 text-grey-500 rounded-lg font-medium cursor-default text-body ${
+                      bouncing ? 'animate-bounce' : ''
+                    }`}
+                  >
+                    모든 콘텐츠를 확인했습니다
+                  </button>
+                  <Link
+                    href="/articles"
+                    className="text-body text-tossBlue font-medium hover:text-primary-600"
+                  >
+                    전체 콘텐츠 보기 →
+                  </Link>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </section>
   )

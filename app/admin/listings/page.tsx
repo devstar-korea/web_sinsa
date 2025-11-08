@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,8 +39,14 @@ import {
   Eye,
   EyeOff,
   RotateCcw,
+  Loader2,
 } from 'lucide-react'
-import { dummyListings as listings } from '@/lib/dummy-data'
+import {
+  getAllListingsAdmin,
+  updateListing,
+  deleteListing,
+  permanentDeleteListing,
+} from '@/lib/api/listings'
 import type { Listing } from '@/lib/types'
 
 type SortField = 'createdAt' | 'price' | 'viewCount'
@@ -48,8 +54,10 @@ type SortOrder = 'asc' | 'desc'
 type TabStatus = 'all' | 'active' | 'pending' | 'hidden' | 'sold' | 'deleted'
 
 export default function AdminListingsPage() {
-  // TODO: 실제로는 Supabase에서 데이터 가져오기
-  const [allListings] = useState<Listing[]>(listings)
+  // 데이터 상태
+  const [allListings, setAllListings] = useState<Listing[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   // 탭 및 필터
@@ -60,6 +68,25 @@ export default function AdminListingsPage() {
   // 정렬
   const [sortField, setSortField] = useState<SortField>('createdAt')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+
+  // 데이터 로딩
+  useEffect(() => {
+    loadListings()
+  }, [])
+
+  const loadListings = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const data = await getAllListingsAdmin()
+      setAllListings(data)
+    } catch (err) {
+      console.error('매물 조회 실패:', err)
+      setError('매물을 불러오는데 실패했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // 탭별 카운트
   const tabCounts = useMemo(() => {
@@ -100,9 +127,7 @@ export default function AdminListingsPage() {
 
     // 지역 필터
     if (locationFilter !== 'all') {
-      result = result.filter(
-        (listing) => listing.location.province === locationFilter
-      )
+      result = result.filter((listing) => listing.province === locationFilter)
     }
 
     // 정렬
@@ -111,14 +136,14 @@ export default function AdminListingsPage() {
       let bValue: number | string
 
       if (sortField === 'price') {
-        aValue = a.price.amount
-        bValue = b.price.amount
+        aValue = a.price_amount || 0
+        bValue = b.price_amount || 0
       } else if (sortField === 'viewCount') {
-        aValue = a.viewCount
-        bValue = b.viewCount
+        aValue = a.view_count || 0
+        bValue = b.view_count || 0
       } else {
-        aValue = new Date(a.createdAt).getTime()
-        bValue = new Date(b.createdAt).getTime()
+        aValue = new Date(a.created_at || '').getTime()
+        bValue = new Date(b.created_at || '').getTime()
       }
 
       if (sortOrder === 'asc') {
@@ -150,35 +175,85 @@ export default function AdminListingsPage() {
   }
 
   // 상태 변경
-  const handleBulkStatusChange = (status: string) => {
-    // TODO: Supabase에 일괄 업데이트
-    console.log('Bulk status change:', selectedIds, status)
-    setSelectedIds([])
+  const handleBulkStatusChange = async (status: string) => {
+    try {
+      await Promise.all(
+        selectedIds.map((id) => updateListing(id, { status: status as any }))
+      )
+      await loadListings()
+      setSelectedIds([])
+    } catch (err) {
+      console.error('일괄 상태 변경 실패:', err)
+      alert('상태 변경에 실패했습니다.')
+    }
   }
 
   // 삭제 (Soft Delete)
-  const handleDelete = (id: string) => {
-    // TODO: Supabase에서 soft delete (deletedAt 업데이트)
-    console.log('Soft delete listing:', id)
+  const handleDelete = async (id: string) => {
+    if (!confirm('이 매물을 삭제하시겠습니까? (30일 후 완전 삭제)')) return
+
+    try {
+      await deleteListing(id)
+      await loadListings()
+    } catch (err) {
+      console.error('매물 삭제 실패:', err)
+      alert('매물 삭제에 실패했습니다.')
+    }
   }
 
   // 일괄 삭제
-  const handleBulkDelete = () => {
-    // TODO: Supabase에서 일괄 soft delete
-    console.log('Bulk soft delete:', selectedIds)
-    setSelectedIds([])
+  const handleBulkDelete = async () => {
+    if (!confirm(`선택한 ${selectedIds.length}개 매물을 삭제하시겠습니까?`)) return
+
+    try {
+      await Promise.all(selectedIds.map((id) => deleteListing(id)))
+      await loadListings()
+      setSelectedIds([])
+    } catch (err) {
+      console.error('일괄 삭제 실패:', err)
+      alert('일괄 삭제에 실패했습니다.')
+    }
   }
 
   // 복원
-  const handleRestore = (id: string) => {
-    // TODO: Supabase에서 복원 (deletedAt null로 변경)
-    console.log('Restore listing:', id)
+  const handleRestore = async (id: string) => {
+    try {
+      await updateListing(id, { deleted_at: null, deleted_by: null })
+      await loadListings()
+    } catch (err) {
+      console.error('복원 실패:', err)
+      alert('복원에 실패했습니다.')
+    }
   }
 
   // 영구 삭제
-  const handlePermanentDelete = (id: string) => {
-    // TODO: Supabase에서 영구 삭제
-    console.log('Permanent delete listing:', id)
+  const handlePermanentDelete = async (id: string) => {
+    if (
+      !confirm(
+        '영구적으로 삭제됩니다. 복구할 수 없습니다. 계속하시겠습니까?'
+      )
+    )
+      return
+
+    try {
+      await permanentDeleteListing(id)
+      await loadListings()
+    } catch (err) {
+      console.error('영구 삭제 실패:', err)
+      alert('영구 삭제에 실패했습니다.')
+    }
+  }
+
+  // 상태 토글
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'active' ? 'hidden' : 'active'
+    try {
+      await updateListing(id, { status: newStatus })
+      await loadListings()
+    } catch (err) {
+      console.error('상태 변경 실패:', err)
+      alert('상태 변경에 실패했습니다.')
+    }
   }
 
   // 상태 뱃지 스타일
@@ -209,8 +284,27 @@ export default function AdminListingsPage() {
 
   // 고유 지역 목록
   const uniqueProvinces = useMemo(() => {
-    return Array.from(new Set(allListings.map((l) => l.location.province)))
+    return Array.from(new Set(allListings.map((l) => l.province)))
   }, [allListings])
+
+  // 로딩 중이면 로딩 UI 표시
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  // 에러 발생 시 에러 메시지 표시
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 space-y-4">
+        <p className="text-error">{error}</p>
+        <Button onClick={loadListings}>다시 시도</Button>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -415,7 +509,7 @@ export default function AdminListingsPage() {
                         />
                       </TableCell>
                       <TableCell className="font-mono text-sm">
-                        {listing.listingNumber || listing.id.substring(0, 8)}
+                        {listing.listing_number || listing.id.substring(0, 8)}
                       </TableCell>
                       <TableCell>
                         <Link
@@ -425,12 +519,12 @@ export default function AdminListingsPage() {
                           {listing.title}
                         </Link>
                       </TableCell>
-                      <TableCell>{listing.location.province}</TableCell>
+                      <TableCell>{listing.province}</TableCell>
                       <TableCell className="text-right font-medium">
-                        {listing.price.displayText}
+                        {listing.price_display_text || `${(listing.price_amount || 0).toLocaleString()}원`}
                       </TableCell>
                       <TableCell className="text-center">
-                        {listing.viewCount.toLocaleString()}
+                        {(listing.view_count || 0).toLocaleString()}
                       </TableCell>
                       {currentTab !== 'deleted' && (
                         <TableCell className="text-center">
@@ -438,14 +532,14 @@ export default function AdminListingsPage() {
                         </TableCell>
                       )}
                       <TableCell className="text-center text-sm text-grey-600">
-                        {currentTab === 'deleted' && listing.deletedAt
-                          ? new Date(listing.deletedAt).toLocaleDateString('ko-KR')
-                          : new Date(listing.createdAt).toLocaleDateString('ko-KR')}
+                        {currentTab === 'deleted' && listing.deleted_at
+                          ? new Date(listing.deleted_at).toLocaleDateString('ko-KR')
+                          : new Date(listing.created_at || '').toLocaleDateString('ko-KR')}
                       </TableCell>
                       {currentTab === 'deleted' && (
                         <TableCell className="text-center text-sm">
                           {(() => {
-                            const days = getDaysUntilPermanentDelete(listing.deletedAt)
+                            const days = getDaysUntilPermanentDelete(listing.deleted_at)
                             return days !== null ? (
                               <span className={days <= 7 ? 'text-error font-medium' : 'text-grey-600'}>
                                 {days}일 후 완전 삭제
@@ -495,14 +589,18 @@ export default function AdminListingsPage() {
                                 </DropdownMenuItem>
                                 {listing.status === 'active' ? (
                                   <DropdownMenuItem
-                                    onClick={() => console.log('Hide:', listing.id)}
+                                    onClick={() =>
+                                      handleToggleStatus(listing.id, listing.status)
+                                    }
                                   >
                                     <EyeOff className="w-4 h-4 mr-2" />
                                     숨김
                                   </DropdownMenuItem>
                                 ) : (
                                   <DropdownMenuItem
-                                    onClick={() => console.log('Show:', listing.id)}
+                                    onClick={() =>
+                                      handleToggleStatus(listing.id, listing.status)
+                                    }
                                   >
                                     <Eye className="w-4 h-4 mr-2" />
                                     표시

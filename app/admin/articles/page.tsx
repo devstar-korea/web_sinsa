@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,11 +14,15 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ExternalLink, Plus, Edit, Trash2 } from 'lucide-react'
-import { getAllBlogArticles } from '@/lib/dummy-data'
+import { ExternalLink, Plus, Edit, Trash2, Loader2 } from 'lucide-react'
+import {
+  getAllArticlesAdmin,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+} from '@/lib/api/articles'
 import type { Article } from '@/lib/types'
 
-// TODO: 실제 데이터로 교체 (Supabase API 연동)
 const categoryLabels = {
   guide: '가이드',
   tips: '노하우',
@@ -26,7 +30,8 @@ const categoryLabels = {
 }
 
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState<Article[]>(getAllBlogArticles())
+  const [articles, setArticles] = useState<Article[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'guide' | 'tips' | 'market'>('all')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -36,8 +41,8 @@ export default function ArticlesPage() {
   const [newArticle, setNewArticle] = useState({
     title: '',
     excerpt: '',
-    thumbnailUrl: '',
-    externalUrl: '',
+    thumbnail_url: '',
+    external_url: '',
     category: 'guide' as 'guide' | 'tips' | 'market',
   })
 
@@ -45,10 +50,28 @@ export default function ArticlesPage() {
   const [editArticle, setEditArticle] = useState({
     title: '',
     excerpt: '',
-    thumbnailUrl: '',
-    externalUrl: '',
+    thumbnail_url: '',
+    external_url: '',
     category: 'guide' as 'guide' | 'tips' | 'market',
   })
+
+  // 데이터 로딩
+  useEffect(() => {
+    loadArticles()
+  }, [])
+
+  const loadArticles = async () => {
+    try {
+      setIsLoading(true)
+      const data = await getAllArticlesAdmin()
+      setArticles(data)
+    } catch (err) {
+      console.error('아티클 조회 실패:', err)
+      alert('아티클을 불러오는데 실패했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const filteredArticles =
     selectedCategory === 'all'
@@ -59,8 +82,8 @@ export default function ArticlesPage() {
     setNewArticle({
       title: '',
       excerpt: '',
-      thumbnailUrl: '',
-      externalUrl: '',
+      thumbnail_url: '',
+      external_url: '',
       category: 'guide',
     })
     setIsAddModalOpen(true)
@@ -70,38 +93,36 @@ export default function ArticlesPage() {
     setIsAddModalOpen(false)
   }
 
-  const handleAddArticle = () => {
-    // TODO: Supabase API 호출하여 저장
-    console.log('Add Article:', newArticle)
-
-    // 임시로 목록에 추가
-    const article: Article = {
-      id: `blog-article-${Date.now()}`,
-      title: newArticle.title,
-      slug: newArticle.title.toLowerCase().replace(/\s+/g, '-'),
-      category: newArticle.category,
-      excerpt: newArticle.excerpt,
-      thumbnail: {
-        url: newArticle.thumbnailUrl || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
-        alt: newArticle.title,
-      },
-      author: {
-        name: 'SHAREZONE',
-      },
-      viewCount: 0,
-      isFeatured: false,
-      isImported: true,
-      blogPlatform: 'naver',
-      externalUrl: newArticle.externalUrl,
-      importedAt: new Date().toISOString(),
-      lastSyncedAt: new Date().toISOString(),
-      publishedAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+  const handleAddArticle = async () => {
+    if (!newArticle.title || !newArticle.excerpt || !newArticle.external_url) {
+      alert('제목, 요약, 블로그 URL은 필수입니다.')
+      return
     }
 
-    setArticles([article, ...articles])
-    handleCloseAddModal()
+    try {
+      await createArticle({
+        title: newArticle.title,
+        slug: newArticle.title.toLowerCase().replace(/\s+/g, '-'),
+        category: newArticle.category,
+        excerpt: newArticle.excerpt,
+        thumbnail_url: newArticle.thumbnail_url || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+        thumbnail_alt: newArticle.title,
+        author_name: 'SHAREZONE',
+        is_featured: false,
+        is_imported: true,
+        blog_platform: 'naver',
+        external_url: newArticle.external_url,
+        imported_at: new Date().toISOString(),
+        last_synced_at: new Date().toISOString(),
+        published_at: new Date().toISOString(),
+      })
+
+      await loadArticles()
+      handleCloseAddModal()
+    } catch (err) {
+      console.error('아티클 추가 실패:', err)
+      alert('아티클 추가에 실패했습니다.')
+    }
   }
 
   const handleOpenEditModal = (article: Article) => {
@@ -109,8 +130,8 @@ export default function ArticlesPage() {
     setEditArticle({
       title: article.title,
       excerpt: article.excerpt,
-      thumbnailUrl: article.thumbnail.url,
-      externalUrl: article.externalUrl || '',
+      thumbnail_url: article.thumbnail_url || '',
+      external_url: article.external_url || '',
       category: article.category,
     })
     setIsEditModalOpen(true)
@@ -121,43 +142,49 @@ export default function ArticlesPage() {
     setSelectedArticle(null)
   }
 
-  const handleUpdateArticle = () => {
+  const handleUpdateArticle = async () => {
     if (!selectedArticle) return
 
-    // TODO: Supabase API 호출하여 업데이트
-    console.log('Update Article:', { id: selectedArticle.id, ...editArticle })
+    if (!editArticle.title || !editArticle.excerpt) {
+      alert('제목과 요약은 필수입니다.')
+      return
+    }
 
-    // 임시로 목록 업데이트
-    setArticles(
-      articles.map((a) =>
-        a.id === selectedArticle.id
-          ? {
-              ...a,
-              title: editArticle.title,
-              excerpt: editArticle.excerpt,
-              thumbnail: {
-                ...a.thumbnail,
-                url: editArticle.thumbnailUrl,
-              },
-              externalUrl: editArticle.externalUrl,
-              category: editArticle.category,
-              updatedAt: new Date().toISOString(),
-            }
-          : a
-      )
-    )
+    try {
+      await updateArticle(selectedArticle.id, {
+        title: editArticle.title,
+        excerpt: editArticle.excerpt,
+        thumbnail_url: editArticle.thumbnail_url,
+        external_url: editArticle.external_url,
+        category: editArticle.category,
+      })
 
-    handleCloseEditModal()
+      await loadArticles()
+      handleCloseEditModal()
+    } catch (err) {
+      console.error('아티클 수정 실패:', err)
+      alert('아티클 수정에 실패했습니다.')
+    }
   }
 
-  const handleDeleteArticle = (id: string) => {
+  const handleDeleteArticle = async (id: string) => {
     if (!confirm('이 콘텐츠를 삭제하시겠습니까?')) return
 
-    // TODO: Supabase API 호출하여 삭제
-    console.log('Delete Article:', id)
+    try {
+      await deleteArticle(id)
+      await loadArticles()
+    } catch (err) {
+      console.error('아티클 삭제 실패:', err)
+      alert('아티클 삭제에 실패했습니다.')
+    }
+  }
 
-    // 임시로 목록에서 제거
-    setArticles(articles.filter((a) => a.id !== id))
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
@@ -225,8 +252,8 @@ export default function ArticlesPage() {
                 {/* Thumbnail */}
                 <div className="w-32 h-24 flex-shrink-0 bg-grey-100 rounded-lg overflow-hidden">
                   <img
-                    src={article.thumbnail.url}
-                    alt={article.thumbnail.alt}
+                    src={article.thumbnail_url || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop'}
+                    alt={article.thumbnail_alt || article.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -248,11 +275,11 @@ export default function ArticlesPage() {
 
                   <div className="flex items-center justify-between text-sm text-grey-500">
                     <div className="flex items-center gap-4">
-                      <span>{new Date(article.publishedAt).toLocaleDateString('ko-KR')}</span>
-                      <span>조회 {article.viewCount}회</span>
-                      {article.externalUrl && (
+                      <span>{new Date(article.published_at || '').toLocaleDateString('ko-KR')}</span>
+                      <span>조회 {article.view_count || 0}회</span>
+                      {article.external_url && (
                         <a
-                          href={article.externalUrl}
+                          href={article.external_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary hover:underline flex items-center gap-1"
@@ -334,26 +361,26 @@ export default function ArticlesPage() {
             </div>
 
             <div>
-              <Label htmlFor="externalUrl" className="text-sm font-medium text-grey-900">
+              <Label htmlFor="external_url" className="text-sm font-medium text-grey-900">
                 블로그 URL *
               </Label>
               <Input
-                id="externalUrl"
-                value={newArticle.externalUrl}
-                onChange={(e) => setNewArticle({ ...newArticle, externalUrl: e.target.value })}
+                id="external_url"
+                value={newArticle.external_url}
+                onChange={(e) => setNewArticle({ ...newArticle, external_url: e.target.value })}
                 placeholder="https://blog.naver.com/..."
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="thumbnailUrl" className="text-sm font-medium text-grey-900">
+              <Label htmlFor="thumbnail_url" className="text-sm font-medium text-grey-900">
                 썸네일 URL (선택)
               </Label>
               <Input
-                id="thumbnailUrl"
-                value={newArticle.thumbnailUrl}
-                onChange={(e) => setNewArticle({ ...newArticle, thumbnailUrl: e.target.value })}
+                id="thumbnail_url"
+                value={newArticle.thumbnail_url}
+                onChange={(e) => setNewArticle({ ...newArticle, thumbnail_url: e.target.value })}
                 placeholder="https://..."
                 className="mt-1"
               />
@@ -431,27 +458,27 @@ export default function ArticlesPage() {
             </div>
 
             <div>
-              <Label htmlFor="edit-externalUrl" className="text-sm font-medium text-grey-900">
+              <Label htmlFor="edit-external_url" className="text-sm font-medium text-grey-900">
                 블로그 URL *
               </Label>
               <Input
-                id="edit-externalUrl"
-                value={editArticle.externalUrl}
-                onChange={(e) => setEditArticle({ ...editArticle, externalUrl: e.target.value })}
+                id="edit-external_url"
+                value={editArticle.external_url}
+                onChange={(e) => setEditArticle({ ...editArticle, external_url: e.target.value })}
                 placeholder="https://blog.naver.com/..."
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="edit-thumbnailUrl" className="text-sm font-medium text-grey-900">
+              <Label htmlFor="edit-thumbnail_url" className="text-sm font-medium text-grey-900">
                 썸네일 URL (선택)
               </Label>
               <Input
-                id="edit-thumbnailUrl"
-                value={editArticle.thumbnailUrl}
+                id="edit-thumbnail_url"
+                value={editArticle.thumbnail_url}
                 onChange={(e) =>
-                  setEditArticle({ ...editArticle, thumbnailUrl: e.target.value })
+                  setEditArticle({ ...editArticle, thumbnail_url: e.target.value })
                 }
                 placeholder="https://..."
                 className="mt-1"

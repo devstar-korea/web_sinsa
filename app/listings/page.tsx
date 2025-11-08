@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import ListingCard from '@/components/ListingCard'
-import { dummyListings } from '@/lib/dummy-data'
+import { getAllListings } from '@/lib/api/listings'
 import { Listing } from '@/lib/types'
+import { Loader2 } from 'lucide-react'
 
 type SortOption = 'area_large' | 'area_small'
 
@@ -47,27 +48,42 @@ const koreanLocations = [
 ].sort((a, b) => a.label.localeCompare(b.label, 'ko-KR'))
 
 export default function ListingsPage() {
+  const [listings, setListings] = useState<Listing[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [selectedLocation, setSelectedLocation] = useState<string>('all')
   const [sortBy, setSortBy] = useState<SortOption>('area_large')
   const [showFilters, setShowFilters] = useState(false)
 
+  useEffect(() => {
+    loadListings()
+  }, [])
+
+  const loadListings = async () => {
+    try {
+      setIsLoading(true)
+      const data = await getAllListings()
+      setListings(data || [])
+    } catch (err) {
+      console.error('매물 목록 로딩 실패:', err)
+      setListings([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // 필터링 및 정렬된 매물 목록
   const filteredAndSortedListings = useMemo(() => {
-    let filtered = dummyListings.filter((listing) => {
+    let filtered = listings.filter((listing) => {
       // 지역 필터
       if (selectedLocation === 'all') {
         return true
       }
 
-      const locationKey = listing.location.locationKey || listing.location.province
+      // province 필드 사용 (district 정보는 현재 스키마에서는 별도 필터링 불가)
+      const province = listing.province
 
-      // 정확히 일치하는 경우
-      if (locationKey === selectedLocation) {
-        return true
-      }
-
-      // 도 단위 필터: 경기 선택 시 경기-수원, 경기-성남 등도 포함
-      if (locationKey && locationKey.startsWith(selectedLocation + '-')) {
+      // 정확히 일치하는 경우 (예: 서울, 경기 등)
+      if (province === selectedLocation) {
         return true
       }
 
@@ -78,16 +94,24 @@ export default function ListingsPage() {
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case 'area_large':
-          return b.area.pyeong - a.area.pyeong
+          return (b.area_pyeong || 0) - (a.area_pyeong || 0)
         case 'area_small':
-          return a.area.pyeong - b.area.pyeong
+          return (a.area_pyeong || 0) - (b.area_pyeong || 0)
         default:
           return 0
       }
     })
 
     return sorted
-  }, [selectedLocation, sortBy])
+  }, [listings, selectedLocation, sortBy])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -247,8 +271,12 @@ export default function ListingsPage() {
                     d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <p className="text-slate-600 mb-2">해당하는 매물이 없습니다</p>
-                <p className="text-sm text-slate-500">필터 조건을 변경해보세요</p>
+                <p className="text-slate-600 mb-2">
+                  {listings.length === 0 ? '현재 등록된 데이터가 없습니다' : '해당하는 매물이 없습니다'}
+                </p>
+                <p className="text-sm text-slate-500">
+                  {listings.length === 0 ? 'Supabase에 테스트 데이터를 삽입해주세요' : '필터 조건을 변경해보세요'}
+                </p>
               </div>
             )}
           </div>

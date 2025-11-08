@@ -10,14 +10,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-// Supabase 클라이언트 생성
-// 참고: sharezone 스키마의 테이블에 접근하려면 테이블 이름 앞에 'sharezone.' 접두사 사용
-// 예: supabase.from('sharezone.listings').select('*')
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  db: {
-    schema: 'sharezone', // 기본 스키마를 sharezone으로 설정
-  },
-})
+// Supabase 클라이언트 생성 (public 스키마 사용)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // 관리자 전용 클라이언트 (서버 사이드에서만 사용)
 export const createAdminClient = () => {
@@ -30,9 +24,6 @@ export const createAdminClient = () => {
   }
 
   return createClient(supabaseUrl, serviceRoleKey, {
-    db: {
-      schema: 'sharezone',
-    },
     auth: {
       autoRefreshToken: false,
       persistSession: false,
