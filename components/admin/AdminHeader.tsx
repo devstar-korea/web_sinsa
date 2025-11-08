@@ -10,13 +10,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
 
 export default function AdminHeader() {
-  const handleLogout = () => {
-    // TODO: Supabase 로그아웃 구현
-    console.log('Logout clicked')
-    // 임시: 로그인 페이지로 이동
-    window.location.href = '/admin'
+  const router = useRouter()
+  const supabase = createClientComponentClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/admin/login')
+    router.refresh()
   }
 
   return (
