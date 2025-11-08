@@ -29,6 +29,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowLeft, Save, Eye } from 'lucide-react'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 // 폼 스키마
 const listingFormSchema = z.object({
@@ -70,6 +71,7 @@ export default function NewListingPage() {
   const router = useRouter()
   const [currentTab, setCurrentTab] = useState('basic')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [images, setImages] = useState<any[]>([])
 
   const form = useForm<ListingFormValues>({
     resolver: zodResolver(listingFormSchema),
@@ -609,26 +611,23 @@ export default function NewListingPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="thumbnailUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>썸네일 URL</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="url"
-                            placeholder="https://example.com/image.jpg"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          TODO: 이미지 업로드 기능 구현 예정
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                  <ImageUploader
+                    maxImages={8}
+                    onImagesChange={setImages}
+                    initialImages={images}
                   />
+
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700">
+                      💡 <strong>이미지 관리 가이드</strong>
+                    </p>
+                    <ul className="text-sm text-blue-600 mt-2 space-y-1 list-disc list-inside">
+                      <li>첫 번째 이미지가 자동으로 대표 이미지로 설정됩니다</li>
+                      <li>이미지를 드래그하여 순서를 변경할 수 있습니다</li>
+                      <li>별 아이콘을 클릭하여 대표 이미지를 변경할 수 있습니다</li>
+                      <li>최대 8장까지 업로드 가능합니다</li>
+                    </ul>
+                  </div>
 
                   <div className="flex justify-between">
                     <Button
