@@ -2,6 +2,70 @@ import { supabase } from '../supabase'
 import type { Listing, ListingImage } from '../types'
 
 // ============================================================================
+// 데이터 변환 함수
+// ============================================================================
+
+/**
+ * Supabase 데이터를 TypeScript Listing 타입으로 변환
+ */
+function transformListingData(dbListing: any): Listing {
+  const images = dbListing.listing_images || []
+  const primaryImage = images.find((img: any) => img.display_order === 1) || images[0]
+
+  return {
+    id: dbListing.id,
+    listingNumber: dbListing.listing_number,
+    title: dbListing.title,
+    slug: dbListing.slug,
+    location: {
+      province: dbListing.province,
+      locationKey: dbListing.location_key,
+    },
+    price: {
+      amount: dbListing.price_amount,
+      displayText: `${(dbListing.price_amount / 100000000).toFixed(1)}억원`,
+      isNegotiable: dbListing.price_amount > 0,
+    },
+    premiumAmount: dbListing.price_amount || 0,
+    totalInvestment: (dbListing.price_amount || 0) + (dbListing.rental_deposit || 0),
+    monthlyProfit: dbListing.monthly_revenue_amount || 0,
+    area: {
+      squareMeter: dbListing.area_square_meter,
+      pyeong: dbListing.area_pyeong,
+    },
+    totalRooms: dbListing.total_rooms,
+    parkingInfo: dbListing.parking_free_spaces
+      ? {
+          freeSpaces: dbListing.parking_free_spaces,
+          monthlyMethod: dbListing.parking_monthly_method || '',
+          monthlyFee: dbListing.parking_monthly_fee || '',
+        }
+      : undefined,
+    thumbnail: {
+      url: primaryImage?.image_url || '/images/placeholder.jpg',
+      alt: primaryImage?.alt_text || dbListing.title,
+    },
+    images: images.map((img: any) => ({
+      url: img.image_url,
+      alt: img.alt_text || dbListing.title,
+      order: img.display_order,
+      isPrimary: img.display_order === 1,
+    })),
+    shortDescription: dbListing.description || '',
+    description: dbListing.description,
+    status: dbListing.status,
+    operatingStatus: 'operating' as const,
+    openedAt: dbListing.created_at,
+    viewCount: dbListing.view_count || 0,
+    isPremium: false,
+    deletedAt: dbListing.deleted_at,
+    deletedBy: dbListing.deleted_by,
+    createdAt: dbListing.created_at,
+    updatedAt: dbListing.updated_at,
+  }
+}
+
+// ============================================================================
 // 매물 CRUD
 // ============================================================================
 
@@ -23,7 +87,7 @@ export async function getAllListings() {
     console.error('getAllListings 에러:', error)
     return null
   }
-  return data
+  return data ? data.map(transformListingData) : null
 }
 
 /**
@@ -80,7 +144,7 @@ export async function getListingBySlug(slug: string) {
     .single()
 
   if (error) throw error
-  return data
+  return data ? transformListingData(data) : null
 }
 
 /**
@@ -102,7 +166,7 @@ export async function getListingsByProvince(province: string) {
     console.error('getListingsByProvince 에러:', error)
     return null
   }
-  return data
+  return data ? data.map(transformListingData) : null
 }
 
 /**

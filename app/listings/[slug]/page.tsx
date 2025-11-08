@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getListingBySlug, dummyListings } from '@/lib/dummy-data'
+import { getListingBySlug, getListingsByProvince } from '@/lib/api/listings'
 import ListingCard from '@/components/ListingCard'
 
 interface PageProps {
@@ -11,20 +11,23 @@ interface PageProps {
 
 export default async function ListingDetailPage({ params }: PageProps) {
   const { slug } = await params
-  const listing = getListingBySlug(slug)
+
+  // Supabase에서 매물 조회
+  let listing
+  try {
+    listing = await getListingBySlug(slug)
+  } catch (error) {
+    notFound()
+  }
 
   if (!listing) {
     notFound()
   }
 
   // 같은 지역의 다른 매물 추천 (최대 3개)
-  const relatedListings = dummyListings
-    .filter(
-      (l) =>
-        l.id !== listing.id &&
-        (l.location.locationKey || l.location.province) === (listing.location.locationKey || listing.location.province) &&
-        l.status === 'active'
-    )
+  const allProvinceListings = await getListingsByProvince(listing.province)
+  const relatedListings = (allProvinceListings || [])
+    .filter((l) => l.id !== listing.id)
     .slice(0, 3)
 
   return (

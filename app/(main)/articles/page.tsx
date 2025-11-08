@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ExternalLink, Eye } from 'lucide-react'
-import { getAllBlogArticles } from '@/lib/dummy-data'
+import { getAllArticles } from '@/lib/api/articles'
+import type { Article } from '@/lib/types'
 
-// TODO: 실제 데이터로 교체 (Supabase API 연동)
 const categoryLabels = {
   guide: '가이드',
   tips: '노하우',
@@ -18,7 +18,19 @@ const BLOG_URL = 'https://blog.naver.com/sharezone_'
 
 export default function ArticlesPage() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'guide' | 'tips' | 'market'>('all')
-  const articles = getAllBlogArticles()
+  const [articles, setArticles] = useState<Article[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Supabase에서 아티클 조회
+  useEffect(() => {
+    async function fetchArticles() {
+      setIsLoading(true)
+      const data = await getAllArticles()
+      setArticles(data || [])
+      setIsLoading(false)
+    }
+    fetchArticles()
+  }, [])
 
   const filteredArticles =
     selectedCategory === 'all'
@@ -85,8 +97,17 @@ export default function ArticlesPage() {
             </div>
 
             {/* Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles.map((article) => (
+            {isLoading ? (
+              <div className="text-center py-16">
+                <p className="text-grey-500 text-lg">로딩 중...</p>
+              </div>
+            ) : filteredArticles.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-grey-500 text-lg">현재 등록된 데이터가 없습니다.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredArticles.map((article) => (
                 <Card
                   key={article.id}
                   className="hover:border-primary transition-all duration-300 hover:shadow-lg cursor-pointer group"
@@ -141,12 +162,7 @@ export default function ArticlesPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-
-            {filteredArticles.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-grey-500 text-lg">해당 카테고리의 콘텐츠가 없습니다</p>
+                ))}
               </div>
             )}
           </div>

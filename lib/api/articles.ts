@@ -2,6 +2,44 @@ import { supabase } from '../supabase'
 import type { Article } from '../types'
 
 // ============================================================================
+// 데이터 변환 함수
+// ============================================================================
+
+/**
+ * Supabase 데이터를 TypeScript Article 타입으로 변환
+ */
+function transformArticleData(dbArticle: any): Article {
+  return {
+    id: dbArticle.id,
+    title: dbArticle.title,
+    slug: dbArticle.slug,
+    category: dbArticle.category,
+    excerpt: dbArticle.excerpt || '',
+    content: dbArticle.content,
+    thumbnail: {
+      url: dbArticle.thumbnail_url || '/images/article-placeholder.jpg',
+      alt: dbArticle.title,
+    },
+    author: {
+      name: 'SHAREZONE',
+      avatar: undefined,
+    },
+    viewCount: dbArticle.view_count || 0,
+    isFeatured: dbArticle.is_featured || false,
+    tags: dbArticle.tags || [],
+    isImported: dbArticle.is_imported || false,
+    blogPlatform: dbArticle.is_imported ? 'naver' : undefined,
+    externalId: undefined,
+    externalUrl: dbArticle.external_url,
+    importedAt: undefined,
+    lastSyncedAt: dbArticle.last_synced_at,
+    publishedAt: dbArticle.published_at,
+    createdAt: dbArticle.created_at,
+    updatedAt: dbArticle.updated_at,
+  }
+}
+
+// ============================================================================
 // 아티클 CRUD
 // ============================================================================
 
@@ -19,7 +57,7 @@ export async function getAllArticles() {
     console.error('getAllArticles 에러:', error)
     return null
   }
-  return data
+  return data ? data.map(transformArticleData) : null
 }
 
 /**
