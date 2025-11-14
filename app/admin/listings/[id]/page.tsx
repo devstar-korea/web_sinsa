@@ -253,7 +253,7 @@ export default function EditListingPage() {
           </Link>
           <div>
             <h1 className="text-main-xl font-bold text-grey-900">매물 수정</h1>
-            <p className="text-body text-grey-600 mt-1">
+            <p className="text-body-sm text-grey-600 mt-1">
               {listing?.listingNumber || listing?.id} - {listing?.title}
             </p>
           </div>

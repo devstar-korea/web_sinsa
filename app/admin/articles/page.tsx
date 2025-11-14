@@ -193,7 +193,7 @@ export default function ArticlesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-main-xl font-bold text-grey-900">콘텐츠 관리</h1>
-          <p className="text-body text-grey-600 mt-2">
+          <p className="text-body-sm text-grey-600 mt-2">
             블로그 글을 가져와서 웹사이트에 표시합니다
           </p>
         </div>

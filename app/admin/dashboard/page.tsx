@@ -127,7 +127,7 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div>
         <h1 className="text-main-xl font-bold text-grey-900">대시보드</h1>
-        <p className="text-body text-grey-600 mt-2">
+        <p className="text-body-sm text-grey-600 mt-2">
           SHAREZONE 관리자 페이지에 오신 것을 환영합니다
         </p>
       </div>
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
           <CardContent>
             {recentActivities.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-body text-grey-500 mb-2">
+                <p className="text-body-sm text-grey-500 mb-2">
                   현재 등록된 데이터가 없습니다
                 </p>
                 <p className="text-sm text-grey-400">
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
                       className={`w-2 h-2 ${getActivityColor(activity.status)} rounded-full mt-2`}
                     ></div>
                     <div className="flex-1">
-                      <p className="text-body font-medium text-grey-900">
+                      <p className="text-body-sm font-medium text-grey-900">
                         {getActivityDescription(activity)}
                       </p>
                       <p className="text-sm text-grey-500">

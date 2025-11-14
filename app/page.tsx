@@ -54,20 +54,20 @@ export default function Home() {
       <section className="bg-tossBlue text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-main-xl text-white mb-8">
+            <h1 className="text-display-md md:text-display-lg text-white mb-8 animate-fade-in text-balance">
               <span className="block mb-3">운영 리스크 없이 만실!</span>
               수익 검증된 공유오피스에 투자하세요
             </h1>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => setIsBuyModalOpen(true)}
-                className="px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body"
+                className="px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body animate-fade-in animate-delay-200"
               >
                 매물 인수 상담
               </button>
               <button
                 onClick={() => setIsSellModalOpen(true)}
-                className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body"
+                className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body animate-fade-in animate-delay-300"
               >
                 매각 상담
               </button>
@@ -176,7 +176,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setIsBuyModalOpen(true)}
-              className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body"
+              className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body animate-fade-in animate-delay-300"
             >
               매물 인수 상담
             </button>

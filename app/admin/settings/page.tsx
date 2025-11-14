@@ -14,7 +14,7 @@ export default function SettingsPage() {
       {/* Page Header */}
       <div>
         <h1 className="text-main-xl font-bold text-grey-900">설정</h1>
-        <p className="text-body text-grey-600 mt-2">
+        <p className="text-body-sm text-grey-600 mt-2">
           시스템 및 계정 설정을 관리합니다
         </p>
       </div>

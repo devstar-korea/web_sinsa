@@ -209,7 +209,7 @@ export default function NewListingPage() {
           </Link>
           <div>
             <h1 className="text-main-xl font-bold text-grey-900">매물 등록</h1>
-            <p className="text-body text-grey-600 mt-1">
+            <p className="text-body-sm text-grey-600 mt-1">
               새로운 공유오피스 매물을 등록합니다
             </p>
           </div>

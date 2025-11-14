@@ -24,7 +24,7 @@ export default function InquiriesLayout({
       {/* Page Header */}
       <div>
         <h1 className="text-main-xl font-bold text-grey-900">상담 관리</h1>
-        <p className="text-body text-grey-600 mt-2">
+        <p className="text-body-sm text-grey-600 mt-2">
           인수 및 매각 상담 신청을 관리합니다
         </p>
       </div>

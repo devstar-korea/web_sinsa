@@ -312,7 +312,7 @@ export default function AdminListingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-main-xl font-bold text-grey-900">매물 관리</h1>
-          <p className="text-body text-grey-600 mt-2">
+          <p className="text-body-sm text-grey-600 mt-2">
             전체 {tabCounts.all}개의 매물
           </p>
         </div>

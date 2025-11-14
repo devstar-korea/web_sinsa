@@ -18,7 +18,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
       <Card className="overflow-hidden border-grey-200 hover:border-tossBlue transition-all hover:shadow-md flex flex-col h-full">
         {/* Listing Number - Above Image */}
         <div className="px-4 pt-4 pb-2">
-          <Badge variant="secondary" className="px-3 py-1.5 text-body font-medium bg-grey-100 text-grey-700 border-grey-200">
+          <Badge variant="secondary" className="px-3 py-1.5 text-badge font-medium bg-grey-100 text-grey-700 border-grey-200">
             {listingNumber}
           </Badge>
         </div>
@@ -46,21 +46,21 @@ export default function ListingCard({ listing }: ListingCardProps) {
           </h3>
 
           {/* Location */}
-          <div className="flex items-center text-body text-grey-600 mb-3">
+          <div className="flex items-center text-caption text-grey-600 mb-3">
             <MapPin className="w-4 h-4 mr-1.5" />
             <span>{listing.location.province}</span>
           </div>
 
           {/* Area */}
           <div className="mb-3">
-            <span className="text-body text-grey-600">{listing.area.squareMeter}㎡</span>
+            <span className="text-caption text-grey-600">{listing.area.squareMeter}㎡</span>
           </div>
 
           {/* 재정 정보 - 강조 */}
           <div className="space-y-2.5 mb-3 mt-auto">
             {/* 권리금 */}
             <div className="flex items-baseline justify-between">
-              <span className="text-body text-grey-600">권리금</span>
+              <span className="text-caption text-grey-600">권리금</span>
               <span className="text-sub font-bold text-grey-900">
                 {(listing.premiumAmount / 10000).toLocaleString()}만원
               </span>
@@ -68,7 +68,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
 
             {/* 월수익 */}
             <div className="flex items-baseline justify-between">
-              <span className="text-body text-grey-600">월수익</span>
+              <span className="text-caption text-grey-600">월수익</span>
               <span className="text-sub font-bold text-tossBlue">
                 {(listing.monthlyProfit / 10000).toLocaleString()}만원
               </span>
@@ -78,7 +78,7 @@ export default function ListingCard({ listing }: ListingCardProps) {
           {/* 총 투자비용 - 가장 강조 */}
           <div className="pt-3 border-t border-grey-200">
             <div className="flex items-baseline justify-between">
-              <span className="text-body font-medium text-grey-700">총 투자비용</span>
+              <span className="text-caption font-medium text-grey-700">총 투자비용</span>
               <span className="text-main font-bold text-grey-900">
                 {(listing.totalInvestment / 100000000).toFixed(1)}억원
               </span>
