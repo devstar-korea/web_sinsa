@@ -47,7 +47,7 @@ import {
   deleteListing,
   permanentDeleteListing,
 } from '@/lib/api/listings'
-import type { Listing } from '@/lib/types'
+import type { ListingRaw } from '@/lib/types'
 
 type SortField = 'createdAt' | 'price' | 'viewCount'
 type SortOrder = 'asc' | 'desc'
@@ -55,7 +55,7 @@ type TabStatus = 'all' | 'active' | 'pending' | 'hidden' | 'sold' | 'deleted'
 
 export default function AdminListingsPage() {
   // 데이터 상태
-  const [allListings, setAllListings] = useState<Listing[]>([])
+  const [allListings, setAllListings] = useState<ListingRaw[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
@@ -79,7 +79,7 @@ export default function AdminListingsPage() {
       setIsLoading(true)
       setError(null)
       const data = await getAllListingsAdmin()
-      setAllListings(data)
+      setAllListings(data || [])
     } catch (err) {
       console.error('매물 조회 실패:', err)
       setError('매물을 불러오는데 실패했습니다.')
@@ -91,12 +91,12 @@ export default function AdminListingsPage() {
   // 탭별 카운트
   const tabCounts = useMemo(() => {
     return {
-      all: allListings.filter(l => !l.deletedAt).length,
-      active: allListings.filter(l => l.status === 'active' && !l.deletedAt).length,
-      pending: allListings.filter(l => l.status === 'pending' && !l.deletedAt).length,
-      hidden: allListings.filter(l => l.status === 'hidden' && !l.deletedAt).length,
-      sold: allListings.filter(l => l.status === 'sold' && !l.deletedAt).length,
-      deleted: allListings.filter(l => !!l.deletedAt).length,
+      all: allListings.filter(l => !l.deleted_at).length,
+      active: allListings.filter(l => l.status === 'active' && !l.deleted_at).length,
+      pending: allListings.filter(l => l.status === 'pending' && !l.deleted_at).length,
+      hidden: allListings.filter(l => l.status === 'hidden' && !l.deleted_at).length,
+      sold: allListings.filter(l => l.status === 'sold' && !l.deleted_at).length,
+      deleted: allListings.filter(l => !!l.deleted_at).length,
     }
   }, [allListings])
 
@@ -106,9 +106,9 @@ export default function AdminListingsPage() {
 
     // 탭 필터 (삭제 여부)
     if (currentTab === 'deleted') {
-      result = result.filter(listing => !!listing.deletedAt)
+      result = result.filter(listing => !!listing.deleted_at)
     } else {
-      result = result.filter(listing => !listing.deletedAt)
+      result = result.filter(listing => !listing.deleted_at)
 
       // 상태 필터
       if (currentTab !== 'all') {
@@ -121,7 +121,7 @@ export default function AdminListingsPage() {
       result = result.filter(
         (listing) =>
           listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          listing.listingNumber?.toLowerCase().includes(searchQuery.toLowerCase())
+          listing.listing_number?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
@@ -218,7 +218,7 @@ export default function AdminListingsPage() {
   // 복원
   const handleRestore = async (id: string) => {
     try {
-      await updateListing(id, { deleted_at: null, deleted_by: null })
+      await updateListing(id, { deleted_at: undefined, deleted_by: undefined })
       await loadListings()
     } catch (err) {
       console.error('복원 실패:', err)

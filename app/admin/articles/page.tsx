@@ -21,7 +21,7 @@ import {
   updateArticle,
   deleteArticle,
 } from '@/lib/api/articles'
-import type { Article } from '@/lib/types'
+import type { ArticleRaw } from '@/lib/types'
 
 const categoryLabels = {
   guide: '가이드',
@@ -30,12 +30,12 @@ const categoryLabels = {
 }
 
 export default function ArticlesPage() {
-  const [articles, setArticles] = useState<Article[]>([])
+  const [articles, setArticles] = useState<ArticleRaw[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'guide' | 'tips' | 'market'>('all')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<ArticleRaw | null>(null)
 
   // 추가 폼 상태
   const [newArticle, setNewArticle] = useState({
@@ -64,7 +64,7 @@ export default function ArticlesPage() {
     try {
       setIsLoading(true)
       const data = await getAllArticlesAdmin()
-      setArticles(data)
+      setArticles(data || [])
     } catch (err) {
       console.error('아티클 조회 실패:', err)
       alert('아티클을 불러오는데 실패했습니다.')
@@ -125,7 +125,7 @@ export default function ArticlesPage() {
     }
   }
 
-  const handleOpenEditModal = (article: Article) => {
+  const handleOpenEditModal = (article: ArticleRaw) => {
     setSelectedArticle(article)
     setEditArticle({
       title: article.title,

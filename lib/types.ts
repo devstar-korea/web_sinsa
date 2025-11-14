@@ -145,6 +145,7 @@ export type ArticleCard = Pick<
   | 'author'
   | 'viewCount'
   | 'publishedAt'
+  | 'externalUrl'
 >
 
 // ============================================
@@ -291,4 +292,109 @@ export interface EmailConfig {
   description?: string
   updatedAt: string
   updatedBy?: string
+}
+
+// ============================================
+// 매물 이미지 (ListingImage)
+// ============================================
+
+export interface ListingImage {
+  id: string
+  listing_id: string
+  image_url: string
+  alt_text: string
+  display_order: number
+  created_at: string
+}
+
+// ============================================
+// Admin API용 Raw 타입 (Supabase 데이터베이스 구조)
+// ============================================
+
+/**
+ * Supabase에서 직접 반환하는 raw 데이터 구조
+ * Admin 페이지에서 사용 (snake_case + flat 구조)
+ */
+export interface ListingRaw {
+  id: string
+  listing_number?: string
+  title: string
+  slug: string
+  
+  // Flat 구조 (nested 아님)
+  province: string
+  location_key?: string
+  
+  // Flat 구조
+  price_amount: number
+  price_display_text?: string
+  is_negotiable?: boolean
+  
+  premium_amount?: number
+  total_investment?: number
+  monthly_profit?: number
+  
+  area_square_meter: number
+  area_pyeong: number
+  total_rooms: number
+  
+  parking_free_spaces?: string
+  parking_monthly_method?: string
+  parking_monthly_fee?: string
+  
+  thumbnail_url?: string
+  thumbnail_alt?: string
+  
+  short_description?: string
+  description?: string
+  
+  status: 'active' | 'pending' | 'hidden' | 'sold'
+  operating_status?: string
+  
+  opened_at?: string
+  view_count?: number
+  is_premium?: boolean
+  
+  deleted_at?: string
+  deleted_by?: string
+  
+  created_at: string
+  updated_at: string
+  created_by?: string
+  updated_by?: string
+  
+  listing_images?: any[]
+}
+
+export interface ArticleRaw {
+  id: string
+  title: string
+  slug: string
+  category: 'guide' | 'tips' | 'market'
+  
+  excerpt: string
+  content?: string
+  
+  // Flat 구조 (nested 아님)
+  thumbnail_url?: string
+  thumbnail_alt?: string
+  
+  author_name?: string
+  author_avatar?: string
+  
+  view_count?: number
+  is_featured?: boolean
+  tags?: string[]
+  
+  is_imported?: boolean
+  blog_platform?: string
+  external_id?: string
+  external_url?: string
+  imported_at?: string
+  last_synced_at?: string
+  
+  published_at: string
+  created_at: string
+  updated_at: string
+  created_by?: string
 }

@@ -1,5 +1,5 @@
 import { supabase } from '../supabase'
-import type { Article } from '../types'
+import type { Article, ArticleRaw } from '../types'
 
 // ============================================================================
 // 데이터 변환 함수
@@ -63,7 +63,7 @@ export async function getAllArticles() {
 /**
  * 관리자용: 모든 아티클 조회
  */
-export async function getAllArticlesAdmin() {
+export async function getAllArticlesAdmin(): Promise<ArticleRaw[] | null> {
   const { data, error } = await supabase
     .from('articles')
     .select('*')
@@ -144,7 +144,7 @@ export async function getArticleBySlug(slug: string) {
 /**
  * 아티클 생성
  */
-export async function createArticle(article: Partial<Article>) {
+export async function createArticle(article: Partial<ArticleRaw>) {
   const { data: userData } = await supabase.auth.getUser()
   const userId = userData.user?.id
 
@@ -164,7 +164,7 @@ export async function createArticle(article: Partial<Article>) {
 /**
  * 아티클 수정
  */
-export async function updateArticle(id: string, updates: Partial<Article>) {
+export async function updateArticle(id: string, updates: Partial<ArticleRaw>) {
   const { data, error } = await supabase
     .from('articles')
     .update(updates)

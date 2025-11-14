@@ -1,5 +1,5 @@
 import { supabase } from '../supabase'
-import type { Listing, ListingImage } from '../types'
+import type { Listing, ListingImage, ListingRaw } from '../types'
 
 // ============================================================================
 // 데이터 변환 함수
@@ -93,7 +93,7 @@ export async function getAllListings() {
 /**
  * 관리자용: 모든 매물 조회 (상태 무관)
  */
-export async function getAllListingsAdmin() {
+export async function getAllListingsAdmin(): Promise<ListingRaw[] | null> {
   const { data, error } = await supabase
     .from('listings')
     .select(`
@@ -193,7 +193,7 @@ export async function createListing(listing: Partial<Listing>) {
 /**
  * 매물 수정
  */
-export async function updateListing(id: string, updates: Partial<Listing>) {
+export async function updateListing(id: string, updates: Partial<ListingRaw>) {
   const { data: userData } = await supabase.auth.getUser()
   const userId = userData.user?.id
 

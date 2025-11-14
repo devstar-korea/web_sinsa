@@ -80,7 +80,7 @@ export default function ListingsPage() {
       }
 
       // province 필드 사용 (district 정보는 현재 스키마에서는 별도 필터링 불가)
-      const province = listing.province
+      const province = listing.location.province
 
       // 정확히 일치하는 경우 (예: 서울, 경기 등)
       if (province === selectedLocation) {
@@ -94,9 +94,9 @@ export default function ListingsPage() {
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case 'area_large':
-          return (b.area_pyeong || 0) - (a.area_pyeong || 0)
+          return (b.area.pyeong || 0) - (a.area.pyeong || 0)
         case 'area_small':
-          return (a.area_pyeong || 0) - (b.area_pyeong || 0)
+          return (a.area.pyeong || 0) - (b.area.pyeong || 0)
         default:
           return 0
       }

@@ -25,7 +25,7 @@ export default async function ListingDetailPage({ params }: PageProps) {
   }
 
   // 같은 지역의 다른 매물 추천 (최대 3개)
-  const allProvinceListings = await getListingsByProvince(listing.province)
+  const allProvinceListings = await getListingsByProvince(listing.location.province)
   const relatedListings = (allProvinceListings || [])
     .filter((l) => l.id !== listing.id)
     .slice(0, 3)
