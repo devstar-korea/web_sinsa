@@ -1,4 +1,13 @@
+// ============================================
+// Admin Layout with Server-Side Authentication
+// ============================================
+// Purpose: Protect all admin pages with server-side session validation
+// Security: Replaces vulnerable middleware (CVE-2025-29927)
+
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import Sidebar from '@/components/admin/Sidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
 
@@ -7,11 +16,24 @@ export const metadata: Metadata = {
   description: '쉐어존 관리자 페이지',
 }
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Server-side authentication check
+  const supabase = createServerComponentClient({ cookies })
+
+  // Get current user (more secure than getSession)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    redirect('/admin/login')
+  }
+
   return (
     <div className="flex h-screen bg-grey-50 overflow-hidden">
       {/* Sidebar */}

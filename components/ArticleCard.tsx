@@ -34,8 +34,8 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         {/* Thumbnail */}
         <div className="relative h-48 bg-slate-100 overflow-hidden">
           <img
-            src={article.thumbnail.url}
-            alt={article.thumbnail.alt}
+            src={article.thumbnail?.url || "/images/placeholder.jpg"}
+            alt={article.thumbnail?.alt || article.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {/* Category Badge */}
@@ -62,19 +62,19 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           {/* Meta */}
           <div className="flex items-center justify-between text-xs text-slate-500">
             <div className="flex items-center space-x-2">
-              {article.author.avatar && (
+              {article.author?.avatar && (
                 <img
-                  src={article.author.avatar}
-                  alt={article.author.name}
+                  src={article.author.avatar!}
+                  alt={article.author?.name || "작성자"}
                   className="w-6 h-6 rounded-full"
                 />
               )}
-              <span>{article.author.name}</span>
+              <span>{article.author?.name || "작성자"}</span>
             </div>
             <div className="flex items-center space-x-3">
               <span className="flex items-center">
                 <Eye className="w-4 h-4 mr-1" />
-                {article.viewCount.toLocaleString()}
+                {(article.viewCount || 0).toLocaleString()}
               </span>
               <span>
                 {new Date(article.publishedAt).toLocaleDateString('ko-KR', {

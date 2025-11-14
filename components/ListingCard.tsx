@@ -26,8 +26,8 @@ export default function ListingCard({ listing }: ListingCardProps) {
         {/* Thumbnail */}
         <div className="relative h-48 bg-grey-100 overflow-hidden flex-shrink-0">
           <img
-            src={listing.thumbnail.url}
-            alt={listing.thumbnail.alt}
+            src={listing.thumbnail?.url || "/images/placeholder.jpg"}
+            alt={listing.thumbnail?.alt || listing.title}
             className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-200"
           />
 
