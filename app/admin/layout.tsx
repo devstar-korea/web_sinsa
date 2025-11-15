@@ -1,5 +1,5 @@
 // ============================================
-// Admin Layout with Server-Side Authentication
+// Admin Layout with Server-Side Authentication  
 // ============================================
 // Purpose: Protect all admin pages with server-side session validation
 // Security: Replaces vulnerable middleware (CVE-2025-29927)
@@ -22,7 +22,11 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   // Server-side authentication check
-  const supabase = createServerComponentClient({ cookies })
+  // Next.js 16: cookies() returns a Promise and must be awaited
+  const cookieStore = await cookies()
+  const supabase = createServerComponentClient({
+    cookies: () => cookieStore
+  })
 
   // Get current user (more secure than getSession)
   const {
