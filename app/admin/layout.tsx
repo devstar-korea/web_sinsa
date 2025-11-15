@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+
 import Sidebar from '@/components/admin/Sidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
 
@@ -24,8 +25,10 @@ export default async function AdminLayout({
   // Server-side authentication check
   // Next.js 16: cookies() returns a Promise and must be awaited
   const cookieStore = await cookies()
+  
+  // createServerComponentClient expects a function that returns the cookie store
   const supabase = createServerComponentClient({
-    cookies: () => cookieStore
+    cookies: async () => cookieStore
   })
 
   // Get current user (more secure than getSession)
