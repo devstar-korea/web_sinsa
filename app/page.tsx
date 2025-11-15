@@ -61,13 +61,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => setIsBuyModalOpen(true)}
-                className="px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body animate-fade-in animate-delay-200"
+                className="w-full sm:w-[240px] px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body whitespace-nowrap animate-fade-in animate-delay-200"
               >
                 매물 인수 상담
               </button>
               <button
                 onClick={() => setIsSellModalOpen(true)}
-                className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body animate-fade-in animate-delay-300"
+                className="w-full sm:w-[240px] px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body whitespace-nowrap animate-fade-in animate-delay-300"
               >
                 매각 상담
               </button>
@@ -170,13 +170,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => setIsSellModalOpen(true)}
-              className="px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors text-body"
+              className="w-full sm:w-[240px] px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body whitespace-nowrap"
             >
               매각 상담
             </button>
             <button
               onClick={() => setIsBuyModalOpen(true)}
-              className="px-8 py-4 bg-white/10 text-white rounded-lg font-medium hover:bg-white/20 transition-colors border-2 border-white/30 text-body animate-fade-in animate-delay-300"
+              className="w-full sm:w-[240px] px-8 py-4 bg-white text-tossBlue rounded-lg font-medium hover:bg-grey-50 transition-colors shadow-md text-body whitespace-nowrap"
             >
               매물 인수 상담
             </button>
