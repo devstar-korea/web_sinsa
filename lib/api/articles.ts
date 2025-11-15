@@ -1,5 +1,6 @@
 import { supabase } from '../supabase'
 import type { Article, ArticleRaw } from '../types'
+import { getDummyImageUrl, type ArticleCategory } from '../utils/dummy-images'
 
 // ============================================================================
 // 데이터 변환 함수
@@ -9,6 +10,12 @@ import type { Article, ArticleRaw } from '../types'
  * Supabase 데이터를 TypeScript Article 타입으로 변환
  */
 function transformArticleData(dbArticle: any): Article {
+  // thumbnail_url이 없으면 카테고리별 더미 이미지 사용
+  const thumbnailUrl = dbArticle.thumbnail_url || getDummyImageUrl(
+    dbArticle.id,
+    dbArticle.category as ArticleCategory
+  )
+
   return {
     id: dbArticle.id,
     title: dbArticle.title,
@@ -17,7 +24,7 @@ function transformArticleData(dbArticle: any): Article {
     excerpt: dbArticle.excerpt || '',
     content: dbArticle.content,
     thumbnail: {
-      url: dbArticle.thumbnail_url || '/images/article-placeholder.jpg',
+      url: thumbnailUrl,
       alt: dbArticle.title,
     },
     author: {
@@ -91,7 +98,7 @@ export async function getArticlesByCategory(category: string) {
     console.error('getArticlesByCategory 에러:', error)
     return null
   }
-  return data
+  return data ? data.map(transformArticleData) : null
 }
 
 /**
@@ -110,7 +117,7 @@ export async function getFeaturedArticles() {
     console.error('getFeaturedArticles 에러:', error)
     return null
   }
-  return data
+  return data ? data.map(transformArticleData) : null
 }
 
 /**
