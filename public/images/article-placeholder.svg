@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f3f4f6"/>
+  <g transform="translate(400, 300)">
+    <circle r="80" fill="#d1d5db" opacity="0.5"/>
+    <path d="M-30-20 L30-20 L30-10 L10-10 L10 30 L-10 30 L-10-10 L-30-10 Z" fill="#9ca3af"/>
+    <circle cx="0" cy="-30" r="8" fill="#9ca3af"/>
+  </g>
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="18" fill="#6b7280" text-anchor="middle">
+    Article Placeholder
+  </text>
+</svg>
