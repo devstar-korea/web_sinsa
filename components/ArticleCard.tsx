@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { Eye } from 'lucide-react'
 import { ArticleCard as ArticleCardType } from '@/lib/types'
 import { Card } from '@/components/ui/card'
@@ -33,13 +34,16 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       <Card className="overflow-hidden border-slate-200 hover:border-primary-300 transition-all hover:shadow-lg">
         {/* Thumbnail */}
         <div className="relative h-48 bg-slate-100 overflow-hidden">
-          <img
-            src={article.thumbnail?.url || "/images/placeholder.jpg"}
+          <Image
+            src={article.thumbnail?.url || "/images/article-placeholder.svg"}
             alt={article.thumbnail?.alt || article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            priority={false}
           />
           {/* Category Badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 z-10">
             <Badge
               variant="secondary"
               className={`rounded-full ${categoryColors[article.category]}`}
